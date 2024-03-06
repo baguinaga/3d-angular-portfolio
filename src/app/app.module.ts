@@ -1,15 +1,12 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
-import { AngularFullpageModule } from '@fullpage/angular-fullpage';
-
 import { AppComponent } from './app.component';
-import { FullpageComponent } from './components/fullpage/fullpage.component';
-import { CanvasComponent } from './components/canvas/canvas.component';
+import { HomeModule } from './home/home.module';
 
 @NgModule({
-  declarations: [AppComponent, FullpageComponent, CanvasComponent],
-  imports: [BrowserModule, AppRoutingModule, AngularFullpageModule],
+  declarations: [AppComponent],
+  imports: [HomeModule, BrowserModule, AppRoutingModule],
   providers: [],
   bootstrap: [AppComponent],
 })

@@ -10,7 +10,7 @@ import * as THREE from 'three';
 @Component({
   selector: 'app-canvas',
   templateUrl: './canvas.component.html',
-  styleUrls: ['./canvas.component.less'],
+  styleUrls: ['./canvas.component.css'],
 })
 export class CanvasComponent {
   @HostListener('window:resize', ['$event'])
