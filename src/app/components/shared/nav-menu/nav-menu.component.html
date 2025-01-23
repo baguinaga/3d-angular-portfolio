@@ -1,0 +1,14 @@
+<nav class="nav">
+  <div class="ui secondary vertical pointing menu">
+    <ng-container *ngFor="let page of pages">
+      <a
+        [routerLink]="page.url"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="item"
+      >
+        {{ page.label }}
+      </a>
+    </ng-container>
+  </div>
+</nav>
