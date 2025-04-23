@@ -4,12 +4,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomeModule } from './components/shared/shared.module';
+import { CanvasComponent } from './components/canvas/canvas.component';
+import { SharedModule } from './components/shared/shared.module';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, CanvasComponent],
   imports: [
-    HomeModule,
+    SharedModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
