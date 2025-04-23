@@ -1,3 +1,6 @@
-<div [@routeTransition]="route.snapshot.data" style="display: contents">
+<div
+  [@routeTransition]="activatedRoute.snapshot.data"
+  style="display: contents"
+>
   <router-outlet />
 </div>

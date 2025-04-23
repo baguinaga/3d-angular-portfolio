@@ -1,10 +1,12 @@
 import * as THREE from 'three';
 
-export function createAlternateScene(): {
+export function createTestScene(): {
+  name: string;
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
   animation: () => void;
 } {
+  const name = 'test';
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0xccc9b8);
 
@@ -17,7 +19,7 @@ export function createAlternateScene(): {
   camera.position.z = 5;
 
   const sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(1, 32, 32),
+    new THREE.SphereGeometry(1.5, 32, 32),
     new THREE.MeshMatcapMaterial({ color: 0xff0000 })
   );
   scene.add(sphere);
@@ -27,5 +29,5 @@ export function createAlternateScene(): {
     sphere.rotation.y += 0.01;
   };
 
-  return { scene, camera, animation };
+  return { name, scene, camera, animation };
 }

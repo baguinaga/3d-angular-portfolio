@@ -7,13 +7,13 @@ import {
 } from '@angular/core';
 import * as THREE from 'three';
 import { SceneManagerService } from '../../services/scene-manager.service';
-import { createDefaultScene } from '../../scenes/default.scene';
-import { createAlternateScene } from '../../scenes/test.scene';
+import { SceneSwitcherService } from '../../services/scene-switcher.service';
+import * as Scenes from '../../scenes/index';
 
 @Component({
   selector: 'app-canvas',
   templateUrl: './canvas.component.html',
-  styleUrls: ['./canvas.component.css'],
+  styleUrl: './canvas.component.css',
 })
 export class CanvasComponent implements AfterViewInit {
   @HostListener('window:resize', ['$event'])
@@ -23,23 +23,20 @@ export class CanvasComponent implements AfterViewInit {
 
   @ViewChild('canvas', { static: true })
   private canvasRef!: ElementRef;
-
   private renderer!: THREE.WebGLRenderer;
   private activeSceneName: string = 'default';
 
-  constructor(private sceneManager: SceneManagerService) {}
+  constructor(
+    private sceneManager: SceneManagerService,
+    private sceneSwitcher: SceneSwitcherService
+  ) {}
 
   ngAfterViewInit(): void {
     this.initRenderer();
-
-    // Register scenes
     this.registerScenes();
-
-    // Set the initial scene
-    this.switchScene('default');
-    this.switchScene('test');
-
-    // Start the rendering loop
+    this.sceneSwitcher.activeScene$.subscribe((sceneName) => {
+      this.switchScene(sceneName);
+    });
     this.startRenderingLoop();
   }
 
@@ -55,23 +52,12 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   private registerScenes(): void {
-    // Register the default scene
-    const defaultScene = createDefaultScene();
-    this.sceneManager.registerScene(
-      'default',
-      defaultScene.scene,
-      defaultScene.camera,
-      defaultScene.animation
-    );
-
-    // Register the alternate scene
-    const alternateScene = createAlternateScene();
-    this.sceneManager.registerScene(
-      'test',
-      alternateScene.scene,
-      alternateScene.camera,
-      alternateScene.animation
-    );
+    Object.entries(Scenes).forEach(([sceneName, createScene]) => {
+      if (typeof createScene === 'function') {
+        const { name, scene, camera, animation } = (createScene as Function)();
+        this.sceneManager.registerScene(name, scene, camera, animation);
+      }
+    });
   }
 
   private switchScene(sceneName: string): void {

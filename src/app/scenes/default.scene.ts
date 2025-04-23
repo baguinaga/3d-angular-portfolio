@@ -1,10 +1,12 @@
 import * as THREE from 'three';
 
 export function createDefaultScene(): {
+  name: string;
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
   animation: () => void;
 } {
+  const name = 'default';
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0xccc9b8);
 
@@ -27,5 +29,5 @@ export function createDefaultScene(): {
     cube.rotation.y += 0.01;
   };
 
-  return { scene, camera, animation };
+  return { name, scene, camera, animation };
 }
