@@ -63,6 +63,7 @@ export class CanvasComponent implements AfterViewInit {
   private switchScene(sceneName: string): void {
     if (this.sceneManager.getScene(sceneName)) {
       this.activeSceneName = sceneName;
+      this.updateOnResize();
     } else {
       console.error(`Scene "${sceneName}" not found.`);
     }
