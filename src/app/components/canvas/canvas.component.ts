@@ -1,30 +1,30 @@
 import {
   Component,
   ElementRef,
-  HostListener,
   AfterViewInit,
+  OnDestroy,
   ViewChild,
 } from '@angular/core';
+import { fromEvent, Subscription } from 'rxjs';
 import * as THREE from 'three';
 import { SceneManagerService } from '../../services/scene-manager.service';
 import { SceneSwitcherService } from '../../services/scene-switcher.service';
 import * as Scenes from '../../scenes/index';
+
+const DEFAULT_SCENE = 'default';
 
 @Component({
   selector: 'app-canvas',
   templateUrl: './canvas.component.html',
   styleUrl: './canvas.component.css',
 })
-export class CanvasComponent implements AfterViewInit {
-  @HostListener('window:resize', ['$event'])
-  onResize(): void {
-    this.updateOnResize();
-  }
-
+export class CanvasComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: true })
   private canvasRef!: ElementRef;
+
   private renderer!: THREE.WebGLRenderer;
-  private activeSceneName: string = 'default';
+  private activeSceneName: string = DEFAULT_SCENE;
+  private subscriptions = new Subscription();
 
   constructor(
     private sceneManager: SceneManagerService,
@@ -34,10 +34,15 @@ export class CanvasComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.initRenderer();
     this.registerScenes();
+    this.setupEventHandlers();
     this.sceneSwitcher.activeScene$.subscribe((sceneName) => {
       this.switchScene(sceneName);
     });
     this.startRenderingLoop();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   private initRenderer(): void {
@@ -49,6 +54,11 @@ export class CanvasComponent implements AfterViewInit {
       this.canvasRef.nativeElement.clientWidth,
       this.canvasRef.nativeElement.clientHeight
     );
+  }
+
+  private setupEventHandlers(): void {
+    const resize$ = fromEvent(window, 'resize');
+    this.subscriptions.add(resize$.subscribe(() => this.updateOnResize()));
   }
 
   private registerScenes(): void {
@@ -63,27 +73,19 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   private startRenderingLoop(): void {
-    const component = this;
-    (function render() {
+    const render = () => {
       requestAnimationFrame(render);
-
-      const activeScene = component.sceneManager.getScene(
-        component.activeSceneName
-      );
-      const activeCamera = component.sceneManager.getCamera(
-        component.activeSceneName
-      );
-      const animation = component.sceneManager.getAnimation(
-        component.activeSceneName
-      );
-
+      const activeScene = this.sceneManager.getScene(this.activeSceneName);
+      const activeCamera = this.sceneManager.getCamera(this.activeSceneName);
+      const animation = this.sceneManager.getAnimation(this.activeSceneName);
       if (activeScene && activeCamera) {
         if (animation) {
           animation();
         }
-        component.renderer.render(activeScene, activeCamera);
+        this.renderer.render(activeScene, activeCamera);
       }
-    })();
+    };
+    render();
   }
 
   private updateOnResize(): void {
