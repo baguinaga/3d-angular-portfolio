@@ -52,20 +52,13 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   private registerScenes(): void {
-    Object.entries(Scenes).forEach(([sceneName, createScene]) => {
-      if (typeof createScene === 'function') {
-        const { name, scene, camera, animation } = (createScene as Function)();
-        this.sceneManager.registerScene(name, scene, camera, animation);
-      }
-    });
+    this.sceneManager.registerAllScenes(Scenes);
   }
 
   private switchScene(sceneName: string): void {
-    if (this.sceneManager.getScene(sceneName)) {
+    if (this.sceneManager.switchToScene(sceneName)) {
       this.activeSceneName = sceneName;
       this.updateOnResize();
-    } else {
-      console.error(`Scene "${sceneName}" not found.`);
     }
   }
 

@@ -21,6 +21,19 @@ export class SceneManagerService {
     this.animations[sceneName] = animationCallback;
   }
 
+  registerAllScenes(scenes: { [key: string]: Function }): void {
+    Object.entries(scenes).forEach(([sceneName, createScene]) => {
+      if (typeof createScene === 'function') {
+        const { name, scene, camera, animation } = (createScene as Function)();
+        this.registerScene(name, scene, camera, animation);
+      }
+    });
+  }
+
+  switchToScene(sceneName: string): boolean {
+    return this.getScene(sceneName) ? true : false;
+  }
+
   // Get a scene by name
   getScene(sceneName: string): THREE.Scene | undefined {
     return this.scenes[sceneName];
