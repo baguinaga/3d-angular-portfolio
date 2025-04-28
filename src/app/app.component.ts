@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
     { label: 'Projects', url: '/projects' },
   ];
 
-  underConstruction: boolean = false;
+  underConstruction = false;
 
   constructor(private underConstructionService: UnderConstructionService) {}
 

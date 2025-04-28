@@ -18,7 +18,7 @@ export class UnderConstructionService {
       .subscribe({
         next: () => {
           const isUnderConstruction = this.underConstructionRoutes.includes(
-            this.router.url
+            this.router.url,
           );
           this.underConstructionSubject.next(isUnderConstruction);
         },

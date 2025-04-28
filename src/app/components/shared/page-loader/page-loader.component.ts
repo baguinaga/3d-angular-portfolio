@@ -14,7 +14,7 @@ export class PageLoaderComponent implements OnInit {
   constructor(
     protected activatedRoute: ActivatedRoute,
     private router: Router,
-    private sceneSwitcher: SceneSwitcherService
+    private sceneSwitcher: SceneSwitcherService,
   ) {}
 
   ngOnInit(): void {

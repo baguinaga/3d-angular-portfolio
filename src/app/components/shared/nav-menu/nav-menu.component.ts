@@ -6,5 +6,5 @@ import { Component, Input } from '@angular/core';
   styleUrl: './nav-menu.component.css',
 })
 export class NavMenuComponent {
-  @Input() pages: any[] = [];
+  @Input() pages: string[] = [];
 }

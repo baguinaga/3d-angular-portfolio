@@ -1,30 +1,39 @@
 import { Injectable } from '@angular/core';
 import * as THREE from 'three';
 
+type CreateSceneFunction = () => {
+  name: string;
+  scene: THREE.Scene;
+  camera: THREE.PerspectiveCamera;
+  animation: () => void;
+};
+
 @Injectable({
   providedIn: 'root',
 })
 export class SceneManagerService {
-  private scenes: { [key: string]: THREE.Scene } = {};
-  private animations: { [key: string]: () => void } = {};
-  private cameras: { [key: string]: THREE.PerspectiveCamera } = {};
+  private scenes: Record<string, THREE.Scene> = {};
+  private animations: Record<string, () => void> = {};
+  private cameras: Record<string, THREE.PerspectiveCamera> = {};
 
   // Register a scene
   registerScene(
     sceneName: string,
     scene: THREE.Scene,
     camera: THREE.PerspectiveCamera,
-    animationCallback: () => void
+    animationCallback: () => void,
   ): void {
     this.scenes[sceneName] = scene;
     this.cameras[sceneName] = camera;
     this.animations[sceneName] = animationCallback;
   }
 
-  registerAllScenes(scenes: { [key: string]: Function }): void {
-    Object.entries(scenes).forEach(([sceneName, createScene]) => {
+  registerAllScenes(scenes: Record<string, CreateSceneFunction>): void {
+    Object.entries(scenes).forEach(([_sceneName, createScene]) => {
       if (typeof createScene === 'function') {
-        const { name, scene, camera, animation } = (createScene as Function)();
+        const { name, scene, camera, animation } = (
+          createScene as CreateSceneFunction
+        )();
         this.registerScene(name, scene, camera, animation);
       }
     });

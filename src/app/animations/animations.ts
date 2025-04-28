@@ -18,10 +18,10 @@ export const routeTransition = trigger('routeTransition', [
           keyframes([
             style({ opacity: 0, transform: 'translate(0, -20%)' }),
             style({ opacity: 1, transform: 'translate(0, 0)' }),
-          ])
+          ]),
         ),
       ],
-      { optional: true }
+      { optional: true },
     ),
   ]),
 ]);

@@ -14,13 +14,13 @@ export function createDefaultScene(): {
     1,
     window.innerWidth / window.innerHeight,
     1,
-    1000
+    1000,
   );
   camera.position.z = 200;
 
   const cube = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshMatcapMaterial({ color: 0xdddddd })
+    new THREE.MeshMatcapMaterial({ color: 0xdddddd }),
   );
   scene.add(cube);
 

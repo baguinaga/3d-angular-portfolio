@@ -28,7 +28,7 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private sceneManager: SceneManagerService,
-    private sceneSwitcher: SceneSwitcherService
+    private sceneSwitcher: SceneSwitcherService,
   ) {}
 
   ngAfterViewInit(): void {
@@ -52,7 +52,7 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
     this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.setSize(
       this.canvasRef.nativeElement.clientWidth,
-      this.canvasRef.nativeElement.clientHeight
+      this.canvasRef.nativeElement.clientHeight,
     );
   }
 
