@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { routeTransition } from '../../../animations/animations';
-import { SceneSwitcherService } from '../../../services/scene-switcher.service';
+import { SceneManagerService } from '../../../services/scene-manager.service';
 
 @Component({
   selector: 'app-page-loader',
@@ -14,7 +14,7 @@ export class PageLoaderComponent implements OnInit {
   constructor(
     protected activatedRoute: ActivatedRoute,
     private router: Router,
-    private sceneSwitcher: SceneSwitcherService,
+    private sceneManager: SceneManagerService,
   ) {}
 
   ngOnInit(): void {
@@ -25,7 +25,7 @@ export class PageLoaderComponent implements OnInit {
         const scene = currentRoute?.snapshot.data['scene'];
 
         if (scene) {
-          this.sceneSwitcher.setActiveScene(scene);
+          this.sceneManager.setActiveScene(scene);
         } else {
           console.error('No scene defined for this route');
         }

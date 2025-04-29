@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import * as THREE from 'three';
 
 type CreateSceneFunction = () => {
@@ -15,6 +16,8 @@ export class SceneManagerService {
   private scenes: Record<string, THREE.Scene> = {};
   private animations: Record<string, () => void> = {};
   private cameras: Record<string, THREE.PerspectiveCamera> = {};
+  private activeSceneSubject = new BehaviorSubject<string>('default');
+  public activeScene$ = this.activeSceneSubject.asObservable();
 
   // Register a scene
   registerScene(
@@ -39,8 +42,8 @@ export class SceneManagerService {
     });
   }
 
-  switchToScene(sceneName: string): boolean {
-    return this.getScene(sceneName) ? true : false;
+  setActiveScene(sceneName: string): void {
+    this.activeSceneSubject.next(sceneName);
   }
 
   // Get a scene by name

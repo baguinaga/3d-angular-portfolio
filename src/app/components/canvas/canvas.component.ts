@@ -8,7 +8,6 @@ import {
 import { fromEvent, Subscription } from 'rxjs';
 import * as THREE from 'three';
 import { SceneManagerService } from '../../services/scene-manager.service';
-import { SceneSwitcherService } from '../../services/scene-switcher.service';
 import * as Scenes from '../../scenes/index';
 
 const DEFAULT_SCENE = 'default';
@@ -26,16 +25,13 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
   private activeSceneName: string = DEFAULT_SCENE;
   private subscriptions = new Subscription();
 
-  constructor(
-    private sceneManager: SceneManagerService,
-    private sceneSwitcher: SceneSwitcherService,
-  ) {}
+  constructor(private sceneManager: SceneManagerService) {}
 
   ngAfterViewInit(): void {
     this.initRenderer();
     this.registerScenes();
     this.setupEventHandlers();
-    this.sceneSwitcher.activeScene$.subscribe((sceneName) => {
+    this.sceneManager.activeScene$.subscribe((sceneName) => {
       this.switchScene(sceneName);
     });
     this.startRenderingLoop();
@@ -66,7 +62,7 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
   }
 
   private switchScene(sceneName: string): void {
-    if (this.sceneManager.switchToScene(sceneName)) {
+    if (!!this.sceneManager.getScene(sceneName)) {
       this.activeSceneName = sceneName;
       this.updateOnResize();
     }
