@@ -1,95 +1,30 @@
-import {
-  Component,
-  ElementRef,
-  AfterViewInit,
-  OnDestroy,
-  ViewChild,
-} from '@angular/core';
-import { fromEvent, Subscription } from 'rxjs';
-import * as THREE from 'three';
+import { Component, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
+import { RenderingService } from '../../services/rendering.service';
 import { SceneManagerService } from '../../services/scene-manager.service';
 import * as Scenes from '../../scenes/index';
-
-const DEFAULT_SCENE = 'default';
 
 @Component({
   selector: 'app-canvas',
   templateUrl: './canvas.component.html',
-  styleUrl: './canvas.component.css',
+  styleUrls: ['./canvas.component.css'],
 })
-export class CanvasComponent implements AfterViewInit, OnDestroy {
+export class CanvasComponent implements AfterViewInit {
   @ViewChild('canvas', { static: true })
   private canvasRef!: ElementRef;
 
-  private renderer!: THREE.WebGLRenderer;
-  private activeSceneName: string = DEFAULT_SCENE;
-  private subscriptions = new Subscription();
-
-  constructor(private sceneManager: SceneManagerService) {}
+  constructor(
+    private renderingService: RenderingService,
+    private sceneManager: SceneManagerService,
+  ) {}
 
   ngAfterViewInit(): void {
-    this.initRenderer();
-    this.registerScenes();
-    this.setupEventHandlers();
-    this.sceneManager.activeScene$.subscribe((sceneName) => {
-      this.switchScene(sceneName);
-    });
-    this.startRenderingLoop();
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  private initRenderer(): void {
-    this.renderer = new THREE.WebGLRenderer({
-      canvas: this.canvasRef.nativeElement,
-    });
-    this.renderer.setPixelRatio(devicePixelRatio);
-    this.renderer.setSize(
-      this.canvasRef.nativeElement.clientWidth,
-      this.canvasRef.nativeElement.clientHeight,
-    );
-  }
-
-  private setupEventHandlers(): void {
-    const resize$ = fromEvent(window, 'resize');
-    this.subscriptions.add(resize$.subscribe(() => this.updateOnResize()));
-  }
-
-  private registerScenes(): void {
+    const canvas = this.canvasRef.nativeElement;
     this.sceneManager.registerAllScenes(Scenes);
-  }
+    this.renderingService.initializeRenderer(canvas);
+    this.renderingService.startRenderingLoop();
 
-  private switchScene(sceneName: string): void {
-    if (!!this.sceneManager.getScene(sceneName)) {
-      this.activeSceneName = sceneName;
-      this.updateOnResize();
-    }
-  }
-
-  private startRenderingLoop(): void {
-    const render = () => {
-      requestAnimationFrame(render);
-      const activeScene = this.sceneManager.getScene(this.activeSceneName);
-      const activeCamera = this.sceneManager.getCamera(this.activeSceneName);
-      const animation = this.sceneManager.getAnimation(this.activeSceneName);
-      if (activeScene && activeCamera) {
-        if (animation) {
-          animation();
-        }
-        this.renderer.render(activeScene, activeCamera);
-      }
-    };
-    render();
-  }
-
-  private updateOnResize(): void {
-    const activeCamera = this.sceneManager.getCamera(this.activeSceneName);
-    if (activeCamera) {
-      activeCamera.aspect = window.innerWidth / window.innerHeight;
-      activeCamera.updateProjectionMatrix();
-    }
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    window.addEventListener('resize', () => {
+      this.renderingService.resizeRenderer();
+    });
   }
 }
