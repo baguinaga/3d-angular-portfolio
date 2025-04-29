@@ -47,19 +47,23 @@ export class SceneManagerService {
     return this.scenes[sceneName];
   }
 
+  getActiveScene(): string {
+    return this.activeSceneSubject.getValue();
+  }
+
+  // If the scene exists, set it as the active scene
+  // and trigger the activeScene$ observable
+  setActiveScene(sceneName: string): void {
+    if (!!this.getScene(sceneName)) {
+      this.activeSceneSubject.next(sceneName);
+    }
+  }
+
   getCamera(sceneName: string): THREE.PerspectiveCamera | undefined {
     return this.cameras[sceneName];
   }
 
   getAnimation(sceneName: string): (() => void) | undefined {
     return this.animations[sceneName];
-  }
-
-  // If the scene exists, set it as the active scene
-  // and trigger the activeScene$ observable (comes from page-loader route change)
-  setActiveScene(sceneName: string): void {
-    if (!!this.getScene(sceneName)) {
-      this.activeSceneSubject.next(sceneName);
-    }
   }
 }

@@ -7,6 +7,7 @@ import { UnderConstructionService } from './services/under-construction.service'
   styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit {
+  interactMode: boolean = false;
   public pages = [
     { label: 'About Me', url: '/about' },
     { label: 'Projects', url: '/projects' },
@@ -22,5 +23,8 @@ export class AppComponent implements OnInit {
         this.underConstruction = isRouteUnderConstruction;
       },
     });
+  }
+  toggleInteractMode(): void {
+    this.interactMode = !this.interactMode;
   }
 }

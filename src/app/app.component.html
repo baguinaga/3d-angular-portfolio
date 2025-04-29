@@ -1,4 +1,7 @@
-<app-canvas></app-canvas>
+<button (click)="toggleInteractMode()">
+  {{ interactMode ? 'Disable Interaction' : 'Enable Interaction' }}
+</button>
+<app-canvas [interactMode]="interactMode"></app-canvas>
 <app-nav-menu *ngIf="!underConstruction" [pages]="pages"></app-nav-menu>
 <main>
   <app-page-loader></app-page-loader>
