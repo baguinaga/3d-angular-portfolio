@@ -36,8 +36,24 @@ export class CanvasComponent implements AfterViewInit {
       this.rendering.resizeRenderer();
     });
 
+    // TODO: create a factory method for all event listeners that
+    // takes a callback. Consider a config for unique methods / scene
     canvas.addEventListener('mousemove', (event: MouseEvent) => {
-      this.interactionService.handleMouseMove(event);
+      // TODO; this is currently a hardcoded callback - will be scene specific in future
+      // current callback moves the object away from cursor
+      this.interactionService.handleMouseMove(
+        event,
+        (object, deltaX, deltaY) => {
+          object.position.x += deltaX * 0.02;
+          object.position.y -= deltaY * 0.02;
+        },
+      );
     });
+    canvas.addEventListener('mousedown', (event: MouseEvent) =>
+      this.interactionService.handleMouseDown(event),
+    );
+    canvas.addEventListener('mouseup', () =>
+      this.interactionService.handleMouseUp(),
+    );
   }
 }
