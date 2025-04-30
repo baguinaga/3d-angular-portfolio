@@ -14,7 +14,8 @@ export class RenderingService {
   constructor(private sceneManager: SceneManagerService) {
     this.sceneManager.activeScene$.subscribe((sceneName) => {
       this.activeSceneName = sceneName;
-      this.resizeRenderer();
+      //short-circuit evaluation, only resize if renderer is initialized
+      this.renderer && this.resizeRenderer();
     });
   }
 
