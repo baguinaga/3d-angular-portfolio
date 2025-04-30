@@ -7,6 +7,15 @@ type CreateSceneFunction = () => {
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
   animation: () => void;
+  callbacks?: {
+    mousemove?: (
+      object: THREE.Object3D,
+      deltaX: number,
+      deltaY: number,
+    ) => void;
+    mousedown?: (object: THREE.Object3D) => void;
+    mouseup?: () => void;
+  };
 };
 
 @Injectable({

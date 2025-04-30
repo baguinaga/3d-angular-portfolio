@@ -5,6 +5,15 @@ export function createDefaultScene(): {
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
   animation: () => void;
+  callbacks: {
+    mousemove?: (
+      object: THREE.Object3D,
+      deltaX: number,
+      deltaY: number,
+    ) => void;
+    mousedown?: (object: THREE.Object3D) => void;
+    mouseup?: () => void;
+  };
 } {
   const name = 'default';
   const scene = new THREE.Scene();
@@ -29,5 +38,21 @@ export function createDefaultScene(): {
     cube.rotation.y += 0.01;
   };
 
-  return { name, scene, camera, animation };
+  const callbacks = {
+    // Push the object away from the cursor
+    mousemove: (object: THREE.Object3D, deltaX: number, deltaY: number) => {
+      object.position.x += deltaX * 0.02;
+      object.position.y -= deltaY * 0.02;
+    },
+    // TODO: Placeholder for mouse down and up events
+    mousedown: (object: THREE.Object3D) => {
+      console.log(name, 'Object selected:', object);
+    },
+    // TODO: Placeholder for mouse up event
+    mouseup: () => {
+      console.log(name, 'Object deselected');
+    },
+  };
+
+  return { name, scene, camera, animation, callbacks };
 }
