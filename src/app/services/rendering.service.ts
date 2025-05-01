@@ -7,6 +7,7 @@ import { SceneManagerService } from './scene-manager.service';
 })
 export class RenderingService {
   private renderer!: THREE.WebGLRenderer;
+  // TODO: create a config for the default scene name and other constants
   private activeSceneName: string = 'default';
 
   // Subscribe to the active scene name from the SceneManagerService,
@@ -14,7 +15,7 @@ export class RenderingService {
   constructor(private sceneManager: SceneManagerService) {
     this.sceneManager.activeScene$.subscribe((sceneName) => {
       this.activeSceneName = sceneName;
-      //short-circuit evaluation, only resize if renderer is initialized
+      //short-circuit evaluation, only resize if renderer has been initialized
       this.renderer && this.resizeRenderer();
     });
   }
@@ -48,7 +49,8 @@ export class RenderingService {
     renderCycle();
   }
 
-  // Resize the renderer
+  // Resize the renderer to maintain the aspect ratio if the window is resized
+  // also called when the active scene changes
   resizeRenderer(): void {
     const camera = this.sceneManager.getCamera(this.activeSceneName);
 

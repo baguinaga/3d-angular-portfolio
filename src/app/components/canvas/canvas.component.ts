@@ -39,7 +39,7 @@ export class CanvasComponent implements AfterViewInit {
     // TODO: create a factory method for all event listeners that
     // takes a callback. Consider a config for unique methods / scene
     canvas.addEventListener('mousemove', (event: MouseEvent) => {
-      // TODO; this is currently a hardcoded callback - will be scene specific in future
+      // TODO: this is currently a hardcoded callback - will be scene specific in future
       // current callback moves the object away from cursor
       this.interactionService.handleMouseMove(
         event,

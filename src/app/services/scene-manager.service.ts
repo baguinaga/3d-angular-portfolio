@@ -1,21 +1,20 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import * as THREE from 'three';
+import { createInteractionCallbacks } from '../utils/interaction-callback-factory';
 
+// TODO: move types to a separate file
 type CreateSceneFunction = () => {
   name: string;
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
   animation: () => void;
-  callbacks?: {
-    mousemove?: (
-      object: THREE.Object3D,
-      deltaX: number,
-      deltaY: number,
-    ) => void;
-    mousedown?: (object: THREE.Object3D) => void;
-    mouseup?: () => void;
-  };
+  callbacks?: InteractiveCallbacks;
+};
+// TODO: move this to a separate file
+// generic type for interaction callbacks
+type InteractiveCallbacks = {
+  [key: string]: (...args: any[]) => void;
 };
 
 @Injectable({
@@ -25,6 +24,11 @@ export class SceneManagerService {
   private scenes: Record<string, THREE.Scene> = {};
   private animations: Record<string, () => void> = {};
   private cameras: Record<string, THREE.PerspectiveCamera> = {};
+  private sceneCallbacks: Record<string, InteractiveCallbacks> = {};
+  private clearCallbacks?: () => void;
+
+  // RxJS BehaviorSubject used to emit the active scene
+  // consumed by the rendering service
   private activeSceneSubject = new BehaviorSubject<string>('default');
   public activeScene$: Observable<string> =
     this.activeSceneSubject.asObservable();
@@ -34,20 +38,22 @@ export class SceneManagerService {
     scene: THREE.Scene,
     camera: THREE.PerspectiveCamera,
     animationCallback: () => void,
+    callbacks?: InteractiveCallbacks,
   ): void {
     this.scenes[sceneName] = scene;
     this.cameras[sceneName] = camera;
     this.animations[sceneName] = animationCallback;
+    callbacks && this.sceneCallbacks[sceneName];
   }
 
-  // Is used to register all scenes from index.ts imported in the canvas component
+  // This method is used to iterate over all imported scenes (scenes/index.ts) and register them
   registerAllScenes(scenes: Record<string, CreateSceneFunction>): void {
     Object.entries(scenes).forEach(([_sceneName, createScene]) => {
       if (typeof createScene === 'function') {
-        const { name, scene, camera, animation } = (
+        const { name, scene, camera, animation, callbacks } = (
           createScene as CreateSceneFunction
         )();
-        this.registerScene(name, scene, camera, animation);
+        this.registerScene(name, scene, camera, animation, callbacks);
       }
     });
   }
@@ -60,8 +66,8 @@ export class SceneManagerService {
     return this.activeSceneSubject.getValue();
   }
 
-  // If the scene exists, set it as the active scene
-  // and trigger the activeScene$ observable
+  // This method sets the active scene Subject which emits the activeScene$ observable
+  // TODO: integrate with interaction callback factory (note key issues with current implementation in page-loader.ts)
   setActiveScene(sceneName: string): void {
     if (!!this.getScene(sceneName)) {
       this.activeSceneSubject.next(sceneName);

@@ -24,11 +24,10 @@ export class PageLoaderComponent implements OnInit {
         const currentRoute = this.activatedRoute.root.firstChild;
         const scene = currentRoute?.snapshot.data['scene'];
 
-        if (scene) {
-          this.sceneManager.setActiveScene(scene);
-        } else {
-          console.error('No scene defined for this route');
-        }
+        // TODO: create a hollistic method for handling negative cases
+        scene
+          ? this.sceneManager.setActiveScene(scene)
+          : console.error('No scene defined for this route');
       });
   }
 }
