@@ -1,19 +1,15 @@
 import * as THREE from 'three';
+// TODO: create a more specific type for callbacks
+type InteractiveCallbacks = {
+  [key: string]: (...args: any[]) => void;
+};
 
 export function createDefaultScene(): {
   name: string;
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
   animation: () => void;
-  callbacks: {
-    mousemove?: (
-      object: THREE.Object3D,
-      deltaX: number,
-      deltaY: number,
-    ) => void;
-    mousedown?: (object: THREE.Object3D) => void;
-    mouseup?: () => void;
-  };
+  callbacks: InteractiveCallbacks;
 } {
   const name = 'default';
   const scene = new THREE.Scene();
@@ -37,20 +33,25 @@ export function createDefaultScene(): {
     cube.rotation.x += 0.01;
     cube.rotation.y += 0.01;
   };
+  // TODO: create a file that contains generic types of interaction callbacks
+  // for example: "push" "rotate" "scale" "select" "deselect"
 
   const callbacks = {
     // Push the object away from the cursor
     mousemove: (object: THREE.Object3D, deltaX: number, deltaY: number) => {
-      object.position.x += deltaX * 0.02;
-      object.position.y -= deltaY * 0.02;
+      object.position.x += deltaX * 0.01;
+      object.position.y -= deltaY * 0.01;
+      console.log('mousemove');
     },
     // TODO: Placeholder for mouse down and up events
     mousedown: (object: THREE.Object3D) => {
-      console.log(name, 'Object selected:', object);
+      object
+        ? console.log('mousedown', object)
+        : console.log('mousedown', 'No object selected');
     },
     // TODO: Placeholder for mouse up event
     mouseup: () => {
-      console.log(name, 'Object deselected');
+      console.log('mouseup');
     },
   };
 

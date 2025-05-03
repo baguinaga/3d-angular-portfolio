@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import * as THREE from 'three';
+import { InteractionsService } from './interactions.service';
 import { createInteractionCallbacks } from '../utils/interaction-callback-factory';
 
 // TODO: move types to a separate file
-type CreateSceneFunction = () => {
+type CreateSceneFunction = (interactionsService: InteractionsService) => {
   name: string;
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
@@ -26,12 +27,19 @@ export class SceneManagerService {
   private cameras: Record<string, THREE.PerspectiveCamera> = {};
   private sceneCallbacks: Record<string, InteractiveCallbacks> = {};
   private clearCallbacks?: () => void;
+  private canvas?: HTMLCanvasElement;
 
   // RxJS BehaviorSubject used to emit the active scene
   // consumed by the rendering service
   private activeSceneSubject = new BehaviorSubject<string>('default');
   public activeScene$: Observable<string> =
     this.activeSceneSubject.asObservable();
+
+  constructor(private interactionsService: InteractionsService) {}
+
+  setCanvas(canvas: HTMLCanvasElement): void {
+    this.canvas = canvas;
+  }
 
   registerScene(
     sceneName: string,
@@ -43,17 +51,25 @@ export class SceneManagerService {
     this.scenes[sceneName] = scene;
     this.cameras[sceneName] = camera;
     this.animations[sceneName] = animationCallback;
-    callbacks && this.sceneCallbacks[sceneName];
+    if (callbacks) {
+      this.sceneCallbacks[sceneName] = callbacks;
+    }
   }
 
   // This method is used to iterate over all imported scenes (scenes/index.ts) and register them
   registerAllScenes(scenes: Record<string, CreateSceneFunction>): void {
-    Object.entries(scenes).forEach(([_sceneName, createScene]) => {
-      if (typeof createScene === 'function') {
-        const { name, scene, camera, animation, callbacks } = (
-          createScene as CreateSceneFunction
-        )();
-        this.registerScene(name, scene, camera, animation, callbacks);
+    Object.entries(scenes).forEach(([_sceneName, createSceneFunction]) => {
+      if (typeof createSceneFunction === 'function') {
+        // Create the scene definitions using the createSceneFunction, pass along instance of InteractionsService
+        const sceneDefinition = createSceneFunction(this.interactionsService);
+        // Register the scene properties into scene manager
+        this.registerScene(
+          sceneDefinition.name,
+          sceneDefinition.scene,
+          sceneDefinition.camera,
+          sceneDefinition.animation,
+          sceneDefinition.callbacks,
+        );
       }
     });
   }
@@ -70,7 +86,51 @@ export class SceneManagerService {
   // TODO: integrate with interaction callback factory (note key issues with current implementation in page-loader.ts)
   setActiveScene(sceneName: string): void {
     if (!!this.getScene(sceneName)) {
+      // Clear previous scene callbacks
+      if (this.clearCallbacks) {
+        this.clearCallbacks();
+        this.clearCallbacks = undefined;
+      }
+      // Set active and emit the new scene
       this.activeSceneSubject.next(sceneName);
+
+      const callbacks = this.sceneCallbacks[sceneName];
+      const scene = this.scenes[sceneName];
+      const camera = this.cameras[sceneName];
+      const canvas = this.canvas;
+
+      // Creates scene interaction callbacks and stores the clear function
+      if (callbacks && this.canvas && canvas && scene) {
+        // clearCallbacks is higher order function that clears the event listeners
+        // the listeners are bound by using the createInteractionCallbacks factory
+        // the factory binds the events to canvas and passes the event to the interactions service
+        this.clearCallbacks = createInteractionCallbacks(this.canvas, {
+          mousemove: (event: MouseEvent) => {
+            this.interactionsService.handleMouseMove(
+              event,
+              scene,
+              camera,
+              callbacks['mousemove'],
+            );
+          },
+          mousedown: (event: MouseEvent) => {
+            this.interactionsService.handleMouseDown(
+              event,
+              scene,
+              camera,
+              callbacks['mousedown'],
+            );
+          },
+          mouseup: (event: MouseEvent) => {
+            this.interactionsService.handleMouseUp(
+              event,
+              scene,
+              camera,
+              callbacks['mouseup'],
+            );
+          },
+        });
+      }
     }
   }
 

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import * as THREE from 'three';
-import { SceneManagerService } from './scene-manager.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,16 +9,12 @@ export class InteractionsService {
   private mouse = new THREE.Vector2();
   private selectedObject: THREE.Object3D | null = null;
 
-  constructor(private sceneManager: SceneManagerService) {}
-
   handleMouseMove(
     event: MouseEvent,
+    scene: THREE.Scene,
+    camera: THREE.PerspectiveCamera,
     callback?: (object: THREE.Object3D, deltaX: number, deltaY: number) => void,
   ): void {
-    const activeSceneName = this.sceneManager.getActiveScene();
-    const camera = this.sceneManager.getCamera(activeSceneName);
-    const scene = this.sceneManager.getScene(activeSceneName);
-
     if (!camera || !scene) return;
     // TODO: consider using a method to normalize the mouse coordinates
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -40,12 +35,10 @@ export class InteractionsService {
 
   handleMouseDown(
     event: MouseEvent,
-    callback?: (object: THREE.Object3D) => void,
+    scene: THREE.Scene,
+    camera: THREE.PerspectiveCamera,
+    callback?: (object?: THREE.Object3D) => void,
   ): void {
-    const activeSceneName = this.sceneManager.getActiveScene();
-    const camera = this.sceneManager.getCamera(activeSceneName);
-    const scene = this.sceneManager.getScene(activeSceneName);
-
     if (!camera || !scene) return;
 
     this.raycaster.setFromCamera(this.mouse, camera);
@@ -53,12 +46,19 @@ export class InteractionsService {
 
     if (intersects.length > 0) {
       this.selectedObject = intersects[0].object;
-      console.log('Selected object:', this.selectedObject);
+      callback && callback(this.selectedObject);
+    } else {
+      callback && callback();
     }
   }
 
-  handleMouseUp(callback?: () => void): void {
+  handleMouseUp(
+    event: MouseEvent,
+    scene: THREE.Scene,
+    camera: THREE.PerspectiveCamera,
+    callback?: () => void,
+  ): void {
     this.selectedObject = null;
-    console.log('Deselected object');
+    callback && callback();
   }
 }
