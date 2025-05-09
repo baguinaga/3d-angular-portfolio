@@ -9,10 +9,10 @@
   transition:
     filter 0.5s ease,
     z-index 2s ease;
-  filter: sepia(0.25);
+  filter: sepia(0.25) grayscale(0.8);
 }
 
 .canvas.interact {
   z-index: 1000;
-  filter: sepia(0);
+  filter: sepia(0) grayscale(0);
 }

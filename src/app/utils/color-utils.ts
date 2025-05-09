@@ -18,3 +18,16 @@ export function hexToRgb(hex: string | number): {
     b: (hex & 0xff) / 255, // Extract blue and normalize to [0, 1]
   };
 }
+
+export function setVertexColor(
+  colors: Float32Array,
+  colorpos: number,
+  hex: number | string,
+  alpha: number = 1.0,
+): number {
+  const { r, g, b } = hexToRgb(hex); // Convert hex to RGB
+  colors[colorpos++] = r * alpha; // Red component
+  colors[colorpos++] = g * alpha; // Green component
+  colors[colorpos++] = b * alpha; // Blue component
+  return colorpos;
+}

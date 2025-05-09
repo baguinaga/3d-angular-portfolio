@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 import { SceneDefinition } from '../types/scene.types';
+import { setVertexColor } from '../utils/color-utils';
 
 export function animatedParticlesSceneDef(): SceneDefinition {
   const name = 'particles-web';
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xa0a0a0);
+  scene.background = new THREE.Color(0x5d5f75);
 
   const camera = new THREE.PerspectiveCamera(
     45,
@@ -14,6 +15,7 @@ export function animatedParticlesSceneDef(): SceneDefinition {
   );
   camera.position.z = 600;
 
+  // Radius of the bounding box
   const r = 800;
   const rHalf = r / 2;
 
@@ -24,11 +26,12 @@ export function animatedParticlesSceneDef(): SceneDefinition {
   const particleData: any = [];
 
   // Particle Velocity Multipliers
-  const velocityMultX = 0.9;
-  const velocityMultY = 0.9;
-  const velocityMultZ = 0.9;
+  const velocityMultX = 0.6;
+  const velocityMultY = 0.6;
+  const velocityMultZ = 0.6;
 
   // Defining segment connections
+  const segmentColor = 0x000ccc; // Color of the segments
   const maxSegmentDistance = 150;
   const maxConnections = 8;
   const segmentCount = particleCount * particleCount;
@@ -162,15 +165,10 @@ export function animatedParticlesSceneDef(): SceneDefinition {
           segmentPositions[vertexpos++] = particlePositions[j * 3 + 1];
           segmentPositions[vertexpos++] = particlePositions[j * 3 + 2];
 
-          // Set line color based on distance
+          // Set line color based on distance,
           const alpha = 1.0 - dist / maxSegmentDistance;
-          colors[colorpos++] = alpha;
-          colors[colorpos++] = alpha;
-          colors[colorpos++] = alpha;
-
-          colors[colorpos++] = alpha;
-          colors[colorpos++] = alpha;
-          colors[colorpos++] = alpha;
+          colorpos = setVertexColor(colors, colorpos, segmentColor, alpha); // First vertex of segment
+          colorpos = setVertexColor(colors, colorpos, segmentColor, alpha); // Second vertex of segment
 
           numConnected++;
         }
