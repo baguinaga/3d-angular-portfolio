@@ -1,6 +1,4 @@
-type InteractiveCallbacks = {
-  [key: string]: (...args: any[]) => void;
-};
+import { InteractiveCallbacks } from '../types/scene.types';
 
 export function createInteractionCallbacks(
   canvas: HTMLCanvasElement,
