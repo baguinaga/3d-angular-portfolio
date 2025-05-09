@@ -13,17 +13,17 @@ const routes: Routes = [
   {
     path: 'under-construction',
     component: UnderConstructionComponent,
-    data: { scene: 'test' },
+    data: { scene: 'particle-web' },
   },
   {
     path: 'about',
     component: AboutMeComponent,
-    data: { scene: 'default' },
+    data: { scene: 'particles-web' },
   },
   {
     path: 'projects',
     component: ProjectsComponent,
-    data: { scene: 'test' },
+    data: { scene: 'particles-web' },
   },
   { path: '**', redirectTo: 'under-construction' },
 ];

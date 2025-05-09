@@ -2,21 +2,11 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import * as THREE from 'three';
 import { InteractionsService } from './interactions.service';
+import {
+  CreateSceneFunction,
+  InteractiveCallbacks,
+} from '../types/scene.types';
 import { createInteractionCallbacks } from '../utils/interaction-callback-factory';
-
-// TODO: move types to a separate file
-type CreateSceneFunction = (interactionsService: InteractionsService) => {
-  name: string;
-  scene: THREE.Scene;
-  camera: THREE.PerspectiveCamera;
-  animation: () => void;
-  callbacks?: InteractiveCallbacks;
-};
-// TODO: move this to a separate file
-// generic type for interaction callbacks
-type InteractiveCallbacks = {
-  [key: string]: (...args: any[]) => void;
-};
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +21,7 @@ export class SceneManagerService {
 
   // RxJS BehaviorSubject used to emit the active scene
   // consumed by the rendering service
-  private activeSceneSubject = new BehaviorSubject<string>('default');
+  private activeSceneSubject = new BehaviorSubject<string>('particles-web');
   public activeScene$: Observable<string> =
     this.activeSceneSubject.asObservable();
 

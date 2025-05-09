@@ -8,7 +8,7 @@ import { SceneManagerService } from './scene-manager.service';
 export class RenderingService {
   private renderer!: THREE.WebGLRenderer;
   // TODO: create a config for the default scene name and other constants
-  private activeSceneName: string = 'default';
+  private activeSceneName: string = 'particles-web';
 
   // Subscribe to the active scene name from the SceneManagerService,
   // trigger resize to maintain aspect ratio
@@ -22,7 +22,11 @@ export class RenderingService {
 
   // Initialize the renderer
   initializeRenderer(canvas: HTMLCanvasElement): THREE.WebGLRenderer {
-    this.renderer = new THREE.WebGLRenderer({ canvas });
+    this.renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+    });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     return this.renderer;

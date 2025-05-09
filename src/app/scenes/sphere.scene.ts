@@ -1,40 +1,29 @@
 import * as THREE from 'three';
-// TODO: create a more specific type for callbacks
-type InteractiveCallbacks = {
-  [key: string]: (...args: any[]) => void;
-};
+import { SceneDefinition } from '../types/scene.types';
 
-export function createDefaultScene(): {
-  name: string;
-  scene: THREE.Scene;
-  camera: THREE.PerspectiveCamera;
-  animation: () => void;
-  callbacks: InteractiveCallbacks;
-} {
-  const name = 'default';
+export function sphereSceneDef(): SceneDefinition {
+  const name = 'sphere';
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0xccc9b8);
 
   const camera = new THREE.PerspectiveCamera(
-    1,
+    75,
     window.innerWidth / window.innerHeight,
-    1,
+    0.1,
     1000,
   );
-  camera.position.z = 200;
+  camera.position.z = 5;
 
-  const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshMatcapMaterial({ color: 0xdddddd }),
+  const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(1.5, 32, 32),
+    new THREE.MeshMatcapMaterial({ color: 0xff0000 }),
   );
-  scene.add(cube);
+  scene.add(sphere);
 
   const animation = () => {
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    sphere.rotation.x += 0.01;
+    sphere.rotation.y += 0.01;
   };
-  // TODO: create a file that contains generic types of interaction callbacks
-  // for example: "push" "rotate" "scale" "select" "deselect"
 
   const callbacks = {
     // Push the object away from the cursor
@@ -43,7 +32,6 @@ export function createDefaultScene(): {
       object.position.y -= deltaY * 0.01;
       console.log('mousemove');
     },
-    // TODO: Placeholder for mouse down and up events
     mousedown: (object: THREE.Object3D) => {
       object
         ? console.log('mousedown', object)
