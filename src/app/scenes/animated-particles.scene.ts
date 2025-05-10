@@ -11,17 +11,17 @@ export function animatedParticlesSceneDef(): SceneDefinition {
     45,
     window.innerWidth / window.innerHeight,
     1,
-    4000,
+    6000,
   );
   camera.position.z = 600;
 
-  // Radius of the bounding box
-  const r = 800;
-  const rHalf = r / 2;
+  // Radius of the bounding sphere
+  const diameter = 1000;
+  const sphereRadius = diameter / 2;
 
   // Defining the particle system
   const particles = new THREE.BufferGeometry();
-  const particleCount = 300;
+  const particleCount = 400;
   const particlePositions = new Float32Array(particleCount * 3);
   const particleData: any = [];
 
@@ -60,9 +60,9 @@ export function animatedParticlesSceneDef(): SceneDefinition {
   // for each particle, create a random position (x, y, z)
   // and store in Flot32Array, reposition to the center of the scene with radius r
   for (let i = 0; i < particleCount; i++) {
-    const x = Math.random() * r - rHalf;
-    const y = Math.random() * r - rHalf;
-    const z = Math.random() * r - rHalf;
+    const x = Math.random() * sphereRadius * 2 - sphereRadius;
+    const y = Math.random() * sphereRadius * 2 - sphereRadius;
+    const z = Math.random() * sphereRadius * 2 - sphereRadius;
 
     particlePositions[i * 3] = x;
     particlePositions[i * 3 + 1] = y;
@@ -121,24 +121,30 @@ export function animatedParticlesSceneDef(): SceneDefinition {
       particlePositions[i * 3 + 1] += particle.velocity.y;
       particlePositions[i * 3 + 2] += particle.velocity.z;
 
-      // Bounce particles off the bounding box
-      if (
-        particlePositions[i * 3 + 1] < -rHalf ||
-        particlePositions[i * 3 + 1] > rHalf
-      ) {
-        particle.velocity.y = -particle.velocity.y;
-      }
-      if (
-        particlePositions[i * 3] < -rHalf ||
-        particlePositions[i * 3] > rHalf
-      ) {
-        particle.velocity.x = -particle.velocity.x;
-      }
-      if (
-        particlePositions[i * 3 + 2] < -rHalf ||
-        particlePositions[i * 3 + 2] > rHalf
-      ) {
-        particle.velocity.z = -particle.velocity.z;
+      // Bounce particles off the sphere
+      const x = particlePositions[i * 3];
+      const y = particlePositions[i * 3 + 1];
+      const z = particlePositions[i * 3 + 2];
+
+      const distanceFromCenter = Math.sqrt(x * x + y * y + z * z);
+
+      if (distanceFromCenter > sphereRadius) {
+        const normalX = x / distanceFromCenter;
+        const normalY = y / distanceFromCenter;
+        const normalZ = z / distanceFromCenter;
+
+        const velocity = particle.velocity;
+        const dotProduct =
+          velocity.x * normalX + velocity.y * normalY + velocity.z * normalZ;
+
+        velocity.x -= 2 * dotProduct * normalX;
+        velocity.y -= 2 * dotProduct * normalY;
+        velocity.z -= 2 * dotProduct * normalZ;
+
+        const correctionFactor = sphereRadius / distanceFromCenter;
+        particlePositions[i * 3] *= correctionFactor;
+        particlePositions[i * 3 + 1] *= correctionFactor;
+        particlePositions[i * 3 + 2] *= correctionFactor;
       }
 
       // Check for connections with other particles
@@ -184,5 +190,11 @@ export function animatedParticlesSceneDef(): SceneDefinition {
     particles.attributes['position'].needsUpdate = true;
   };
 
-  return { name, scene, camera, animation };
+  const callbacks = {
+    zoom: () => {
+      console.log('zoom');
+    },
+  };
+
+  return { name, scene, camera, animation, callbacks };
 }

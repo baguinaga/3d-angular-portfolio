@@ -119,6 +119,22 @@ export class SceneManagerService {
               callbacks['mouseup'],
             );
           },
+          wheel: (event: WheelEvent) => {
+            this.interactionsService.handleZoom(
+              event,
+              scene,
+              camera,
+              callbacks['zoom'],
+            );
+          },
+          touchmove: (event: WheelEvent) => {
+            this.interactionsService.handleZoom(
+              event,
+              scene,
+              camera,
+              callbacks['touchmove'],
+            );
+          },
         });
       }
     }
@@ -130,5 +146,9 @@ export class SceneManagerService {
 
   getAnimation(sceneName: string): (() => void) | undefined {
     return this.animations[sceneName];
+  }
+
+  setInteractMode(interactMode: boolean): void {
+    this.interactionsService.setInteractMode(interactMode);
   }
 }

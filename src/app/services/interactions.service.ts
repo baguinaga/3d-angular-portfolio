@@ -8,6 +8,14 @@ export class InteractionsService {
   private raycaster = new THREE.Raycaster();
   private mouse = new THREE.Vector2();
   private selectedObject: THREE.Object3D | null = null;
+  private interactMode: boolean = false;
+  private previousTouchDistance?: number;
+
+  // TODO: Create stateService to decouple interactMode
+  // instead of passing it from app component -> canvas -> scene-manager
+  setInteractMode(mode: boolean): void {
+    this.interactMode = mode;
+  }
 
   handleMouseMove(
     event: MouseEvent,
@@ -15,6 +23,7 @@ export class InteractionsService {
     camera: THREE.PerspectiveCamera,
     callback?: (object: THREE.Object3D, deltaX: number, deltaY: number) => void,
   ): void {
+    if (!this.interactMode) return;
     if (!camera || !scene) return;
     // TODO: consider using a method to normalize the mouse coordinates
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -39,6 +48,7 @@ export class InteractionsService {
     camera: THREE.PerspectiveCamera,
     callback?: (object?: THREE.Object3D) => void,
   ): void {
+    if (!this.interactMode) return;
     if (!camera || !scene) return;
 
     this.raycaster.setFromCamera(this.mouse, camera);
@@ -58,7 +68,43 @@ export class InteractionsService {
     camera: THREE.PerspectiveCamera,
     callback?: () => void,
   ): void {
+    if (!this.interactMode) return;
+
     this.selectedObject = null;
+    callback && callback();
+  }
+
+  handleZoom(
+    event: WheelEvent | TouchEvent,
+    scene: THREE.Scene,
+    camera: THREE.PerspectiveCamera,
+    callback?: () => void,
+  ): void {
+    if (!this.interactMode) return;
+    event.preventDefault();
+
+    if (event instanceof WheelEvent) {
+      const zoomFactor = 100;
+      const delta = event.deltaY > 0 ? zoomFactor : -zoomFactor;
+
+      camera.position.z += delta;
+      camera.updateProjectionMatrix();
+    } else if (event instanceof TouchEvent && event.touches.length === 2) {
+      const touch1 = event.touches[0];
+      const touch2 = event.touches[1];
+
+      const currentDistance = Math.sqrt(
+        (touch1.clientX - touch2.clientX) ** 2 +
+          (touch1.clientY - touch2.clientY) ** 2,
+      );
+
+      if (this.previousTouchDistance != undefined) {
+        const delta = (this.previousTouchDistance - currentDistance) * 0.05;
+        camera.position.z += delta;
+        camera.updateProjectionMatrix();
+      }
+      this.previousTouchDistance = currentDistance;
+    }
     callback && callback();
   }
 }

@@ -4,6 +4,7 @@ import {
   AfterViewInit,
   ViewChild,
   Input,
+  OnChanges,
 } from '@angular/core';
 import { RenderingService } from '../../services/rendering.service';
 import { SceneManagerService } from '../../services/scene-manager.service';
@@ -28,15 +29,22 @@ export class CanvasComponent implements AfterViewInit {
     // Set the canvas reference in the SceneManagerService
     // and initialize the renderer
     const canvas = this.canvasRef.nativeElement;
-    canvas && this.sceneManager.setCanvas(canvas);
+    if (!!canvas) {
+      canvas && this.sceneManager.setCanvas(canvas);
+      this.sceneManager.setInteractMode(this.interactMode);
+      this.sceneManager.registerAllScenes(Scenes);
+      this.rendering.initializeRenderer(canvas);
+      this.rendering.startRenderingLoop();
 
-    this.sceneManager.registerAllScenes(Scenes);
-    this.rendering.initializeRenderer(canvas);
-    this.rendering.startRenderingLoop();
+      // TODO: consider whether this should be moved to the rendering service (initializeRenderer)
+      window.addEventListener('resize', () => {
+        this.rendering.resizeRenderer();
+      });
+    }
+  }
 
-    // TODO: consider whether this should be moved to the rendering service (initializeRenderer)
-    window.addEventListener('resize', () => {
-      this.rendering.resizeRenderer();
-    });
+  ngOnChanges(): void {
+    // Update the interact mode in the SceneManagerService
+    this.sceneManager.setInteractMode(this.interactMode);
   }
 }
