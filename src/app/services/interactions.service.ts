@@ -25,6 +25,8 @@ export class InteractionsService {
   ): void {
     if (!this.interactMode) return;
     if (!camera || !scene) return;
+    event.preventDefault();
+
     // TODO: consider using a method to normalize the mouse coordinates
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -50,6 +52,7 @@ export class InteractionsService {
   ): void {
     if (!this.interactMode) return;
     if (!camera || !scene) return;
+    event.preventDefault();
 
     this.raycaster.setFromCamera(this.mouse, camera);
     const intersects = this.raycaster.intersectObjects(scene.children);
@@ -69,13 +72,15 @@ export class InteractionsService {
     callback?: () => void,
   ): void {
     if (!this.interactMode) return;
+    event.preventDefault();
 
     this.selectedObject = null;
     callback && callback();
   }
 
-  handleZoom(
-    event: WheelEvent | TouchEvent,
+  // TODO: add the ability to limit zoom in/out per scene (config?)
+  handleWheel(
+    event: WheelEvent,
     scene: THREE.Scene,
     camera: THREE.PerspectiveCamera,
     callback?: () => void,
@@ -84,12 +89,29 @@ export class InteractionsService {
     event.preventDefault();
 
     if (event instanceof WheelEvent) {
+      //TODO: implement a config for zoomFactor and other settings that
+      // could be scene specific (e.g. zoomFactor, rotationSpeed, etc.)
       const zoomFactor = 100;
       const delta = event.deltaY > 0 ? zoomFactor : -zoomFactor;
 
       camera.position.z += delta;
       camera.updateProjectionMatrix();
-    } else if (event instanceof TouchEvent && event.touches.length === 2) {
+    }
+    callback && callback();
+  }
+
+  // TODO: perform real device testing or a touch emulation solution
+  handleTouch(
+    event: TouchEvent,
+    scene: THREE.Scene,
+    camera: THREE.PerspectiveCamera,
+    callback?: () => void,
+  ): void {
+    if (!this.interactMode) return;
+    event.preventDefault();
+
+    // Two-finger touch event (pinch to zoom)
+    if (event.touches.length === 2) {
       const touch1 = event.touches[0];
       const touch2 = event.touches[1];
 
@@ -104,7 +126,8 @@ export class InteractionsService {
         camera.updateProjectionMatrix();
       }
       this.previousTouchDistance = currentDistance;
+
+      callback && callback();
     }
-    callback && callback();
   }
 }

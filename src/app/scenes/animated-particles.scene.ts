@@ -191,7 +191,10 @@ export function animatedParticlesSceneDef(): SceneDefinition {
   };
 
   const callbacks = {
-    zoom: () => {
+    wheel: () => {
+      console.log('zoom');
+    },
+    touchmove: () => {
       console.log('zoom');
     },
   };

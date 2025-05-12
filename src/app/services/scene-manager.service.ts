@@ -94,6 +94,9 @@ export class SceneManagerService {
         // clearCallbacks is higher order function that clears the event listeners
         // the listeners are bound by using the createInteractionCallbacks factory
         // the factory binds the events to canvas and passes the event to the interactions service
+
+        //TODO: create a method or utility to handle loopping throught the events
+        // current use of factory method is repetitive and not DRY
         this.clearCallbacks = createInteractionCallbacks(this.canvas, {
           mousemove: (event: MouseEvent) => {
             this.interactionsService.handleMouseMove(
@@ -120,15 +123,15 @@ export class SceneManagerService {
             );
           },
           wheel: (event: WheelEvent) => {
-            this.interactionsService.handleZoom(
+            this.interactionsService.handleWheel(
               event,
               scene,
               camera,
-              callbacks['zoom'],
+              callbacks['wheel'],
             );
           },
-          touchmove: (event: WheelEvent) => {
-            this.interactionsService.handleZoom(
+          touchmove: (event: TouchEvent) => {
+            this.interactionsService.handleTouch(
               event,
               scene,
               camera,
