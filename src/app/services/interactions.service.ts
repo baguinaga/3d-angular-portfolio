@@ -78,37 +78,38 @@ export class InteractionsService {
     callback && callback();
   }
 
-  // TODO: add the ability to limit zoom in/out per scene (config?)
+  // TODO: update other interactive handlers to pass along event data
+  // consider
   handleWheel(
     event: WheelEvent,
     scene: THREE.Scene,
     camera: THREE.PerspectiveCamera,
-    callback?: () => void,
+    callback?: (data: { deltaY: number }) => void,
   ): void {
     if (!this.interactMode) return;
     event.preventDefault();
 
-    if (event instanceof WheelEvent) {
-      //TODO: implement a config for zoomFactor and other settings that
-      // could be scene specific (e.g. zoomFactor, rotationSpeed, etc.)
-      const zoomFactor = 100;
-      const delta = event.deltaY > 0 ? zoomFactor : -zoomFactor;
+    let data = { deltaY: 0 };
 
-      camera.position.z += delta;
-      camera.updateProjectionMatrix();
+    if (event instanceof WheelEvent) {
+      // TODO: implement a config for zoomFactor and other settings that
+      // could be scene specific (e.g. zoomFactor, rotationSpeed, etc.)
+      data.deltaY = event.deltaY;
+      callback && callback(data);
     }
-    callback && callback();
   }
 
-  // TODO: perform real device testing or a touch emulation solution
+  // TODO: perform real device testing or find a touch emulation solution
   handleTouch(
     event: TouchEvent,
     scene: THREE.Scene,
     camera: THREE.PerspectiveCamera,
-    callback?: () => void,
+    callback?: (data: { touchDelta: number }) => void,
   ): void {
     if (!this.interactMode) return;
     event.preventDefault();
+
+    let data = { touchDelta: 0 };
 
     // Two-finger touch event (pinch to zoom)
     if (event.touches.length === 2) {
@@ -121,13 +122,12 @@ export class InteractionsService {
       );
 
       if (this.previousTouchDistance != undefined) {
-        const delta = (this.previousTouchDistance - currentDistance) * 0.05;
-        camera.position.z += delta;
-        camera.updateProjectionMatrix();
+        const delta = this.previousTouchDistance - currentDistance;
+        data.touchDelta = delta;
+        callback && callback(data);
       }
-      this.previousTouchDistance = currentDistance;
 
-      callback && callback();
+      this.previousTouchDistance = currentDistance;
     }
   }
 }

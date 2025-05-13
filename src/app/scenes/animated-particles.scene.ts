@@ -5,35 +5,38 @@ import { setVertexColor } from '../utils/color-utils';
 export function animatedParticlesSceneDef(): SceneDefinition {
   const name = 'particles-web';
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x5d5f75);
+  scene.background = new THREE.Color(0xb3a89d);
 
-  const camera = new THREE.PerspectiveCamera(
-    45,
-    window.innerWidth / window.innerHeight,
-    1,
-    6000,
-  );
-  camera.position.z = 600;
+  // TODO:Set up a scene config object, consumed by individual scenes (may want different behaviors)
+  const farPlane = 4000;
+  const nearPlane = 1;
+  const aspectRatio = window.innerWidth / window.innerHeight;
+  const fov = 45;
+  const zoomFactor = 20;
+  const pinchFactor = 0.05;
+  const maxZoom = farPlane - 1000;
+  const minZoom = 50;
+  const defaultZoom = 400;
 
   // Radius of the bounding sphere
-  const diameter = 1000;
+  const diameter = 1700;
   const sphereRadius = diameter / 2;
 
   // Defining the particle system
   const particles = new THREE.BufferGeometry();
-  const particleCount = 400;
+  const particleCount = 1000;
   const particlePositions = new Float32Array(particleCount * 3);
   const particleData: any = [];
 
   // Particle Velocity Multipliers
-  const velocityMultX = 0.6;
-  const velocityMultY = 0.6;
-  const velocityMultZ = 0.6;
+  const velocityMultX = 0.9;
+  const velocityMultY = 0.9;
+  const velocityMultZ = 0.9;
 
   // Defining segment connections
   const segmentColor = 0x000ccc; // Color of the segments
   const maxSegmentDistance = 150;
-  const maxConnections = 8;
+  const maxConnections = 6;
   const segmentCount = particleCount * particleCount;
   const segmentPositions = new Float32Array(segmentCount * 3);
   const colors = new Float32Array(segmentCount * 3);
@@ -58,7 +61,7 @@ export function animatedParticlesSceneDef(): SceneDefinition {
   // TODO: consider creating a seperate method for creating positions
 
   // for each particle, create a random position (x, y, z)
-  // and store in Flot32Array, reposition to the center of the scene with radius r
+  // and store in Flot32Array, reposition to the center of the scene
   for (let i = 0; i < particleCount; i++) {
     const x = Math.random() * sphereRadius * 2 - sphereRadius;
     const y = Math.random() * sphereRadius * 2 - sphereRadius;
@@ -101,6 +104,15 @@ export function animatedParticlesSceneDef(): SceneDefinition {
   const lineSegments = new THREE.LineSegments(segments, sMaterial);
 
   scene.add(pointCloud, lineSegments);
+
+  // Set up the camera
+  const camera = new THREE.PerspectiveCamera(
+    fov,
+    aspectRatio,
+    nearPlane,
+    farPlane,
+  );
+  camera.position.z = defaultZoom;
 
   const animation = () => {
     let vertexpos = 0;
@@ -191,11 +203,30 @@ export function animatedParticlesSceneDef(): SceneDefinition {
   };
 
   const callbacks = {
-    wheel: () => {
-      console.log('zoom');
+    wheel: (data: { deltaY: number }) => {
+      if (!data.deltaY) return;
+      const delta = data.deltaY > 0 ? zoomFactor : -zoomFactor;
+
+      // Clamping the camera position to prevent zooming too far in or out
+      camera.position.z = Math.min(
+        maxZoom,
+        Math.max(minZoom, camera.position.z + delta),
+      );
+
+      camera.updateProjectionMatrix();
     },
-    touchmove: () => {
-      console.log('zoom');
+    touchmove: (data: { pinchDelta: number }) => {
+      if (!data.pinchDelta) return;
+      // pinchDelta is a distance, it is negative when zooming in, positive when zooming out
+      const delta = data.pinchDelta * pinchFactor;
+
+      // Clamping the camera position to prevent zooming too far in or out
+      camera.position.z = Math.min(
+        maxZoom,
+        Math.max(minZoom, camera.position.z + delta),
+      );
+
+      camera.updateProjectionMatrix();
     },
   };
 
