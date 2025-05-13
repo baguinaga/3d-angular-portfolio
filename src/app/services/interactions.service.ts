@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as THREE from 'three';
+import { ZoomEventData } from '../types/interaction.types';
 
 @Injectable({
   providedIn: 'root',
@@ -84,17 +85,17 @@ export class InteractionsService {
     event: WheelEvent,
     scene: THREE.Scene,
     camera: THREE.PerspectiveCamera,
-    callback?: (data: { deltaY: number }) => void,
+    callback?: (data: ZoomEventData) => void,
   ): void {
     if (!this.interactMode) return;
     event.preventDefault();
 
-    let data = { deltaY: 0 };
+    const data: ZoomEventData = { delta: 0, type: 'wheel' };
 
     if (event instanceof WheelEvent) {
       // TODO: implement a config for zoomFactor and other settings that
       // could be scene specific (e.g. zoomFactor, rotationSpeed, etc.)
-      data.deltaY = event.deltaY;
+      data.delta = event.deltaY;
       callback && callback(data);
     }
   }
@@ -104,12 +105,13 @@ export class InteractionsService {
     event: TouchEvent,
     scene: THREE.Scene,
     camera: THREE.PerspectiveCamera,
-    callback?: (data: { touchDelta: number }) => void,
+    callback?: (data: ZoomEventData) => void,
   ): void {
     if (!this.interactMode) return;
+    if (event.touches.length < 2) return;
     event.preventDefault();
 
-    let data = { touchDelta: 0 };
+    const data: ZoomEventData = { delta: 0, type: 'touch' };
 
     // Two-finger touch event (pinch to zoom)
     if (event.touches.length === 2) {
@@ -123,7 +125,7 @@ export class InteractionsService {
 
       if (this.previousTouchDistance != undefined) {
         const delta = this.previousTouchDistance - currentDistance;
-        data.touchDelta = delta;
+        data.delta = delta;
         callback && callback(data);
       }
 

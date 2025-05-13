@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { SceneDefinition } from '../types/scene.types';
+import { ZoomEventData } from '../types/interaction.types';
 import { setVertexColor } from '../utils/color-utils';
 
 export function animatedParticlesSceneDef(): SceneDefinition {
@@ -203,27 +204,27 @@ export function animatedParticlesSceneDef(): SceneDefinition {
   };
 
   const callbacks = {
-    wheel: (data: { deltaY: number }) => {
-      if (!data.deltaY) return;
-      const delta = data.deltaY > 0 ? zoomFactor : -zoomFactor;
+    wheel: (data: ZoomEventData) => {
+      if (!data.delta || data.type !== 'wheel') return;
+      const adjustDelta = data.delta > 0 ? zoomFactor : -zoomFactor;
 
       // Clamping the camera position to prevent zooming too far in or out
       camera.position.z = Math.min(
         maxZoom,
-        Math.max(minZoom, camera.position.z + delta),
+        Math.max(minZoom, camera.position.z + adjustDelta),
       );
 
       camera.updateProjectionMatrix();
     },
-    touchmove: (data: { pinchDelta: number }) => {
-      if (!data.pinchDelta) return;
+    touchmove: (data: ZoomEventData) => {
+      if (!data.delta || data.type !== 'touch') return;
       // pinchDelta is a distance, it is negative when zooming in, positive when zooming out
-      const delta = data.pinchDelta * pinchFactor;
+      const adjustDelta = data.delta * pinchFactor;
 
       // Clamping the camera position to prevent zooming too far in or out
       camera.position.z = Math.min(
         maxZoom,
-        Math.max(minZoom, camera.position.z + delta),
+        Math.max(minZoom, camera.position.z + adjustDelta),
       );
 
       camera.updateProjectionMatrix();
