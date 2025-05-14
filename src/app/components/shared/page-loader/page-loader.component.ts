@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { routeTransition } from '../../../animations/animations';
+import { routeAnimation } from '../../../animations/animations';
 import { SceneManagerService } from '../../../services/scene-manager.service';
 
 @Component({
   selector: 'app-page-loader',
   templateUrl: './page-loader.component.html',
   styleUrl: './page-loader.component.css',
-  animations: [routeTransition],
+  animations: [routeAnimation],
 })
 export class PageLoaderComponent implements OnInit {
   constructor(

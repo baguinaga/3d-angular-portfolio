@@ -1,8 +1,26 @@
-<button (click)="toggleInteractMode()">
-  {{ interactMode ? 'Disable Interaction' : 'Enable Interaction' }}
-</button>
-<app-canvas [interactMode]="interactMode"></app-canvas>
-<app-nav-menu *ngIf="!underConstruction" [pages]="pages"></app-nav-menu>
-<main>
-  <app-page-loader></app-page-loader>
-</main>
+<div class="relative min-h-screen">
+  <!-- Canvas Background -->
+  <app-canvas
+    [interactMode]="interactMode"
+    class="absolute inset-0"
+  ></app-canvas>
+
+  <!-- Main Layout -->
+  <div class="relative flex min-h-screen pt-16 md:pt-0">
+    <!-- Navigation Menu -->
+    <app-nav-menu *ngIf="!underConstruction" [pages]="pages"></app-nav-menu>
+
+    <!-- Main Content -->
+    <main class="relative flex-1">
+      <button
+        class="absolute bottom-10 right-10 bg-slate-800 text-white w-32 py-3 shadow-custom rounded-full hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-300 z-50"
+        (click)="toggleInteractMode()"
+      >
+        {{ interactMode ? 'Return' : 'Interact' }}
+      </button>
+
+      <!-- Page Loader Component -->
+      <app-page-loader></app-page-loader>
+    </main>
+  </div>
+</div>

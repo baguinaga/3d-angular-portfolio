@@ -7,21 +7,9 @@ import {
   keyframes,
 } from '@angular/animations';
 
-export const routeTransition = trigger('routeTransition', [
-  transition('* => *', [
-    query(
-      ':enter',
-      [
-        style({ opacity: 0, transform: 'translate(0, 20%)' }),
-        animate(
-          '600ms ease-out',
-          keyframes([
-            style({ opacity: 0, transform: 'translate(0, -20%)' }),
-            style({ opacity: 1, transform: 'translate(0, 0)' }),
-          ]),
-        ),
-      ],
-      { optional: true },
-    ),
+export const routeAnimation = trigger('routeAnimations', [
+  transition('* <=> *', [
+    style({ opacity: 0 }),
+    animate('500ms ease-in-out', style({ opacity: 1 })),
   ]),
 ]);
