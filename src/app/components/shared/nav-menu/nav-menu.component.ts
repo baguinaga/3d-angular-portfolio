@@ -9,4 +9,12 @@ type PagesArray = { label: string; url: string }[];
 })
 export class NavMenuComponent {
   @Input() pages: PagesArray = [];
+
+  // State for mobile menu
+  isMobileMenuOpen = false;
+
+  // Toggle the mobile menu
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
 }

@@ -6,13 +6,11 @@
   width: 100vw;
   z-index: -1000;
   overflow: hidden;
-  transition:
-    z-index 2s ease,
-    filter 12s ease;
+  transition: filter 12s ease;
   filter: hue-rotate(155deg);
 }
 
 .canvas.interact {
-  z-index: 1000;
+  z-index: 40;
   filter: hue-rotate(0deg);
 }

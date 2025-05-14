@@ -1,14 +1,78 @@
-<nav class="nav">
-  <div class="ui secondary vertical pointing menu">
-    <ng-container *ngFor="let page of pages">
+<!-- Desktop Vertical Navigation -->
+<nav
+  class="hidden md:flex flex-col bg-slate-800 text-gray-400 shadow-custom w-48 h-screen justify-center"
+>
+  <ul class="flex flex-col items-center space-y-8 mt-10">
+    <li *ngFor="let page of pages">
       <a
         [routerLink]="page.url"
-        routerLinkActive="active"
+        routerLinkActive="text-white"
         [routerLinkActiveOptions]="{ exact: true }"
-        class="item"
       >
         {{ page.label }}
       </a>
-    </ng-container>
+    </li>
+  </ul>
+</nav>
+
+<!-- Mobile Collapsed Navigation -->
+<nav
+  class="md:hidden fixed top-0 left-0 w-full bg-slate-800 shadow-custom text-gray-400 h-16 z-10"
+>
+  <div class="flex justify-between items-center p-4">
+    <!-- TODO: Logo or some branding -->
+    <span class="text-lg font-bold"></span>
+    <button
+      (click)="toggleMobileMenu()"
+      class="text-white focus:outline-none focus:ring-2 focus:ring-blue-300"
+      [attr.aria-expanded]="isMobileMenuOpen"
+    >
+      <!-- Hamburger Icon -->
+      <svg
+        *ngIf="!isMobileMenuOpen"
+        class="h-6 w-6"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16m-7 6h7"
+        />
+      </svg>
+      <!-- Close Icon -->
+      <svg
+        *ngIf="isMobileMenuOpen"
+        class="h-6 w-6"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
   </div>
+  <ul
+    [class.ui--hidden]="!isMobileMenuOpen"
+    class="transition-all duration-300 ease-in-out flex flex-col items-center space-y-4 p-4 bg-slate-800"
+  >
+    <li *ngFor="let page of pages">
+      <a
+        [routerLink]="page.url"
+        routerLinkActive="text-white"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        {{ page.label }}
+      </a>
+    </li>
+  </ul>
 </nav>
