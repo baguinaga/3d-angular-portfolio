@@ -73,6 +73,8 @@
         routerLinkActive="text-white hover:no-underlinetext-white hover:no-underline"
         [routerLinkActiveOptions]="{ exact: true }"
         class="text-gray-400 hover:text-white hover:underline transition duration-300 ease-in-out"
+        attr.aria-label="{{ page.label }} Page"
+        (click)="toggleMobileMenu()"
       >
         {{ page.label }}
       </a>
