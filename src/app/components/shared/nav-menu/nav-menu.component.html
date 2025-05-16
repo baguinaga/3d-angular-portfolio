@@ -1,6 +1,6 @@
 <!-- Desktop Vertical Navigation -->
 <nav
-  class="hidden md:flex flex-col bg-slate-800 text-gray-400 shadow-custom w-56 h-screen justify-center"
+  class="hidden lg:flex flex-col bg-slate-800 text-gray-400 shadow-custom w-56 h-screen justify-center"
 >
   <ul class="flex flex-col items-center space-y-8 mt-10">
     <li *ngFor="let page of pages">
@@ -19,7 +19,7 @@
 
 <!-- Mobile Collapsed Navigation -->
 <nav
-  class="md:hidden fixed top-0 left-0 w-full bg-slate-800 shadow-custom text-gray-400 h-16 z-10"
+  class="lg:hidden fixed top-0 left-0 w-full bg-slate-800 shadow-custom text-gray-400 h-16 z-10"
 >
   <div class="flex justify-between items-center p-4">
     <!-- TODO: Logo or some branding -->
@@ -73,6 +73,8 @@
         routerLinkActive="text-white hover:no-underlinetext-white hover:no-underline"
         [routerLinkActiveOptions]="{ exact: true }"
         class="text-gray-400 hover:text-white hover:underline transition duration-300 ease-in-out"
+        attr.aria-label="{{ page.label }} Page"
+        (click)="toggleMobileMenu()"
       >
         {{ page.label }}
       </a>

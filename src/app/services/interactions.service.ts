@@ -12,6 +12,21 @@ export class InteractionsService {
   private interactMode: boolean = false;
   private previousTouchDistance?: number;
 
+  private isTouchEndOrInvalid(event: TouchEvent, reqTouches: number): boolean {
+    return (
+      event.type === 'touchend' ||
+      event.type === 'touchcancel' ||
+      event.touches.length < reqTouches
+    );
+  }
+
+  private calculateTouchDistance(touch1: Touch, touch2: Touch): number {
+    return Math.sqrt(
+      (touch1.clientX - touch2.clientX) ** 2 +
+        (touch1.clientY - touch2.clientY) ** 2,
+    );
+  }
+
   // TODO: Create stateService to decouple interactMode
   // instead of passing it from app component -> canvas -> scene-manager
   setInteractMode(mode: boolean): void {
@@ -100,7 +115,6 @@ export class InteractionsService {
     }
   }
 
-  // TODO: perform real device testing or find a touch emulation solution
   handleTouch(
     event: TouchEvent,
     scene: THREE.Scene,
@@ -108,7 +122,10 @@ export class InteractionsService {
     callback?: (data: ZoomEventData) => void,
   ): void {
     if (!this.interactMode) return;
-    if (event.touches.length < 2) return;
+    if (this.isTouchEndOrInvalid(event, 2)) {
+      this.previousTouchDistance = undefined;
+      return;
+    }
     event.preventDefault();
 
     const data: ZoomEventData = { delta: 0, type: 'touch' };
@@ -117,17 +134,16 @@ export class InteractionsService {
     if (event.touches.length === 2) {
       const touch1 = event.touches[0];
       const touch2 = event.touches[1];
+      const currentDistance = this.calculateTouchDistance(touch1, touch2);
 
-      const currentDistance = Math.sqrt(
-        (touch1.clientX - touch2.clientX) ** 2 +
-          (touch1.clientY - touch2.clientY) ** 2,
-      );
-
-      if (this.previousTouchDistance != undefined) {
-        const delta = this.previousTouchDistance - currentDistance;
-        data.delta = delta;
-        callback && callback(data);
+      // If this is the first touch event, store the distance, otherwise calculate the delta
+      if (this.previousTouchDistance === undefined) {
+        this.previousTouchDistance = currentDistance;
+        return;
       }
+      const delta = this.previousTouchDistance - currentDistance;
+      data.delta = delta;
+      callback && callback(data);
 
       this.previousTouchDistance = currentDistance;
     }

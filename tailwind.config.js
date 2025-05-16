@@ -7,7 +7,7 @@ module.exports = {
         custom: '8px 4px 12px #55555596',
       },
       maxHeight: {
-        120: '30rem',
+        104: '26rem',
       },
       fontFamily: {
         sans: ['Khula', 'sans-serif'],
