@@ -2,18 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AboutMeComponent } from '../pages/about-me/about-me.component';
 import { ProjectsComponent } from '../pages/projects/projects.component';
-import { UnderConstructionComponent } from '../pages/under-construction/under-construction.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'under-construction',
+    redirectTo: 'about',
     pathMatch: 'full',
-  },
-  {
-    path: 'under-construction',
-    component: UnderConstructionComponent,
-    data: { scene: 'particle-web' },
   },
   {
     path: 'about',
@@ -25,7 +19,7 @@ const routes: Routes = [
     component: ProjectsComponent,
     data: { scene: 'particles-web' },
   },
-  { path: '**', redirectTo: 'under-construction' },
+  { path: '**', redirectTo: 'about' },
 ];
 
 @NgModule({
