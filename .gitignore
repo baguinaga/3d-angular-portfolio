@@ -40,6 +40,10 @@ testem.log
 /typings
 /.temp
 
+
+# Ignore assets
+src/assets/*/*
+
 # System files
 .DS_Store
 Thumbs.db
