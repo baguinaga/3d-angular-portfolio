@@ -57,12 +57,14 @@ export class RenderingService {
   // also called when the active scene changes
   resizeRenderer(): void {
     const camera = this.sceneManager.getCamera(this.activeSceneName);
+    const width = window.visualViewport?.width || window.innerWidth;
+    const height = window.visualViewport?.height || window.innerHeight;
 
     if (camera) {
-      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.aspect = width / height;
       camera.updateProjectionMatrix();
     }
 
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(width, height);
   }
 }
