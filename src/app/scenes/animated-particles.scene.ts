@@ -14,7 +14,7 @@ export function animatedParticlesSceneDef(): SceneDefinition {
   const aspectRatio = window.innerWidth / window.innerHeight;
   const fov = 45;
   const zoomFactor = 20;
-  const pinchFactor = 0.05;
+  const pinchFactor = 20;
   const maxZoom = farPlane - 1000;
   const minZoom = 50;
   const defaultZoom = 400;
