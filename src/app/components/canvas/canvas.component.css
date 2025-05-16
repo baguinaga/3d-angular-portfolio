@@ -4,13 +4,13 @@
   left: 0;
   height: 100vh;
   width: 100vw;
-  z-index: -1000;
+  z-index: -1;
   overflow: hidden;
   transition: filter 12s ease;
-  filter: hue-rotate(155deg);
+  filter: hue-rotate(155deg) blur(2px);
 }
 
 .canvas.interact {
   z-index: 40;
-  filter: hue-rotate(0deg);
+  filter: hue-rotate(0deg) blur(0px);
 }
