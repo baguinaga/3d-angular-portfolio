@@ -65,6 +65,6 @@ export class RenderingService {
       camera.updateProjectionMatrix();
     }
 
-    this.renderer.setSize(width, height);
+    this.renderer.setSize(width, height, false);
   }
 }
