@@ -8,12 +8,18 @@ import { Component, HostListener, AfterViewInit } from '@angular/core';
   styleUrl: './about-me.component.css',
 })
 export class AboutMeComponent {
+  private prevViewportWidth: number =
+    window.visualViewport?.width || window.innerWidth;
   isExpanded = false;
 
   @HostListener('window:resize')
   onResize(): void {
-    this.updateScrollState();
-    this.isExpanded = false;
+    const currViewportWidth = window.visualViewport?.width || window.innerWidth;
+
+    if (currViewportWidth !== this.prevViewportWidth) {
+      this.updateScrollState();
+      this.isExpanded = false;
+    }
   }
 
   isScrollable(): boolean {
@@ -27,6 +33,7 @@ export class AboutMeComponent {
   updateScrollState(): void {
     const container = document.getElementById('about-me-container');
     const button = document.getElementById('read-more-btn');
+    this.prevViewportWidth = window.visualViewport?.width || window.innerWidth;
 
     if (!container || !button) return;
 
