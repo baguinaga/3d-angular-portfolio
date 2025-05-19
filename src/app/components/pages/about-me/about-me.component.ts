@@ -7,7 +7,7 @@ import { Component, HostListener, AfterViewInit } from '@angular/core';
   templateUrl: './about-me.component.html',
   styleUrl: './about-me.component.css',
 })
-export class AboutMeComponent {
+export class AboutMeComponent implements AfterViewInit {
   private prevViewportWidth: number =
     window.visualViewport?.width || window.innerWidth;
   isExpanded = false;
