@@ -8,7 +8,10 @@ import { UnderConstructionService } from './services/under-construction.service'
 })
 export class AppComponent implements OnInit {
   interactMode: boolean = false;
-  public pages = [{ label: 'About Me', url: '/about' }];
+  public pages = [
+    { label: 'About Me', url: '/about' },
+    { label: 'Projects', url: '/projects' },
+  ];
 
   underConstruction = false;
 

@@ -1,5 +1,166 @@
-<section>
-  <article>
-    <h1>Projects</h1>
-  </article>
+<section
+  class="flex flex-col items-center justify-start lg:min-h-screen h-full px-6 md:px-16 lg:px-24 space-y-4 relative"
+>
+  <!-- Fixed Header -->
+  <div class="w-full max-w-4xl py-4 px-6 md:px-8 lg:px-12">
+    <!-- Page Title -->
+    <h1 class="text-3xl md:text-4xl text-gray-800 text-center">Projects</h1>
+  </div>
+
+  <!-- Scrollable Accordion Container -->
+  <div class="w-full max-w-4xl overflow-y-auto h-[calc(100vh-100px)] space-y-4">
+    <!-- Current Projects Section -->
+    <div class="border border-gray-300 rounded-lg shadow-md">
+      <button
+        class="w-full flex justify-between items-center px-4 py-2 bg-slate-800 text-white font-medium rounded-t-lg focus:outline-none focus:ring-2 focus:ring-gray-300 transition duration-300 ease-in-out"
+        (click)="toggleAccordion('current')"
+        aria-expanded="false"
+        aria-controls="current-projects"
+      >
+        <h2 class="text-xl md:text-2xl text-white text-center">
+          Current Projects
+        </h2>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 transform transition-transform duration-300"
+          [ngClass]="{ 'rotate-180': isCurrentOpen }"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
+      <div
+        id="current-projects"
+        class="overflow-hidden transition-all duration-300 ease-in-out"
+        [ngClass]="{ 'max-h-0': !isCurrentOpen, 'max-h-screen': isCurrentOpen }"
+      >
+        <div class="p-4 space-y-4">
+          <div
+            *ngFor="let project of currentProjects"
+            class="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-4"
+          >
+            <!-- Project Image -->
+            <img
+              *ngIf="project.image"
+              [src]="project.image"
+              [alt]="project.name + ' Screenshot'"
+              class="w-full md:w-1/3 rounded-lg shadow-md"
+            />
+            <!-- Project Details -->
+            <div class="flex flex-col space-y-2">
+              <h2 class="text-xl font-semibold text-gray-800">
+                {{ project.name }}
+              </h2>
+              <p class="text-gray-600">{{ project.description }}</p>
+              <div class="flex space-x-4">
+                <a
+                  [href]="project.githubLink"
+                  target="_blank"
+                  class="text-blue-800 hover:text-blue-950 transition duration-300 ease-in-out"
+                >
+                  GitHub Repo
+                </a>
+                <a
+                  *ngIf="project.demoLink"
+                  [href]="project.demoLink"
+                  target="_blank"
+                  class="text-green-800 hover:text-green-950 transition duration-300 ease-in-out"
+                >
+                  Live Demo
+                </a>
+              </div>
+              <p class="text-sm text-gray-500">
+                <strong>Technologies:</strong>
+                {{ project.technologies.join(', ') }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Past Projects Section -->
+    <div class="border border-gray-300 rounded-lg shadow-md">
+      <button
+        class="w-full flex justify-between items-center px-4 py-2 bg-slate-800 text-white font-medium rounded-t-lg focus:outline-none focus:ring-2 focus:ring-gray-300 transition duration-300 ease-in-out"
+        (click)="toggleAccordion('past')"
+        aria-expanded="false"
+        aria-controls="past-projects"
+      >
+        <h2 class="text-xl md:text-2xl text-white text-center">
+          Past Projects
+        </h2>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 transform transition-transform duration-300"
+          [ngClass]="{ 'rotate-180': isPastOpen }"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
+      <div
+        id="past-projects"
+        class="overflow-hidden transition-all duration-300 ease-in-out"
+        [ngClass]="{ 'max-h-0': !isPastOpen, 'max-h-screen': isPastOpen }"
+      >
+        <div class="p-4 space-y-4">
+          <div
+            *ngFor="let project of pastProjects"
+            class="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-4"
+          >
+            <!-- Project Image -->
+            <img
+              *ngIf="project.image"
+              [src]="project.image"
+              [alt]="project.name + ' Screenshot'"
+              class="w-full md:w-1/3 rounded-lg shadow-md"
+            />
+            <!-- Project Details -->
+            <div class="flex flex-col space-y-2">
+              <h2 class="text-xl font-semibold text-gray-800">
+                {{ project.name }}
+              </h2>
+              <p class="text-gray-600">{{ project.description }}</p>
+              <div class="flex space-x-4">
+                <a
+                  [href]="project.githubLink"
+                  target="_blank"
+                  class="text-blue-800 hover:text-blue-950 transition duration-300 ease-in-out"
+                >
+                  GitHub Repo
+                </a>
+                <a
+                  *ngIf="project.demoLink"
+                  [href]="project.demoLink"
+                  target="_blank"
+                  class="text-green-800 hover:text-green-950 transition duration-300 ease-in-out"
+                >
+                  Live Demo
+                </a>
+              </div>
+              <p class="text-sm text-gray-500">
+                <strong>Technologies:</strong>
+                {{ project.technologies.join(', ') }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
