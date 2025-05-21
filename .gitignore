@@ -43,6 +43,7 @@ testem.log
 
 # Ignore assets
 src/assets/*/*
+src/assets/projects.json
 
 # System files
 .DS_Store
