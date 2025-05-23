@@ -11,10 +11,12 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 })
 export class ProjectsComponent implements OnInit {
   isCurrentOpen = true;
-  isPastOpen = false;
+  isPastOpen = true;
 
   currentProjects: any[] = [];
   pastProjects: any[] = [];
+  sections: any[] = [];
+
   placeholderImage = 'assets/images/placeholder.png';
 
   constructor(private http: HttpClient) {}
@@ -27,6 +29,25 @@ export class ProjectsComponent implements OnInit {
     this.http.get('assets/projects.json').subscribe((data: any) => {
       this.currentProjects = data.currentProjects;
       this.pastProjects = data.pastProjects;
+
+      if (this.currentProjects && this.currentProjects.length > 0) {
+        this.sections = [
+          {
+            title: 'Current Projects',
+            id: 'current-projects',
+            projects: this.currentProjects,
+            isOpen: () => this.isCurrentOpen,
+            toggle: () => (this.isCurrentOpen = !this.isCurrentOpen),
+          },
+          {
+            title: 'Archived Projects',
+            id: 'archived-projects',
+            projects: this.pastProjects,
+            isOpen: () => this.isPastOpen,
+            toggle: () => (this.isPastOpen = !this.isPastOpen),
+          },
+        ];
+      }
     });
   }
 
