@@ -69,11 +69,15 @@
             }"
           >
             <!-- Project Image -->
-            <img
-              [src]="project.image || placeholderImage"
-              [alt]="project.name + ' Screenshot'"
-              class="w-full md:w-1/3 rounded-lg shadow-md"
-            />
+            <div
+              class="w-full md:w-1/3 max-h-40 md:max-h-36 aspect-square flex items-center justify-center overflow-hidden"
+            >
+              <img
+                [src]="project.image || placeholderImage"
+                [alt]="project.name + ' Screenshot'"
+                class="w-full h-full object-contain"
+              />
+            </div>
             <!-- Project Details -->
             <div class="flex flex-col space-y-2 w-full">
               <div class="flex flex-wrap gap-2">
