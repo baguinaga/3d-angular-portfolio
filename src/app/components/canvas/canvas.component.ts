@@ -4,6 +4,7 @@ import {
   AfterViewInit,
   ViewChild,
   Input,
+  HostListener,
   OnChanges,
 } from '@angular/core';
 import { RenderingService } from '../../services/rendering.service';
@@ -15,10 +16,14 @@ import * as Scenes from '../../scenes/index';
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.css'],
 })
-export class CanvasComponent implements AfterViewInit {
+export class CanvasComponent implements AfterViewInit, OnChanges {
   @ViewChild('canvas', { static: true })
   private canvasRef!: ElementRef;
   @Input() interactMode: boolean = false;
+  @HostListener('window:resize')
+  onResize(): void {
+    this.rendering.resizeRenderer();
+  }
 
   constructor(
     private rendering: RenderingService,
@@ -35,11 +40,6 @@ export class CanvasComponent implements AfterViewInit {
       this.sceneManager.registerAllScenes(Scenes);
       this.rendering.initializeRenderer(canvas);
       this.rendering.startRenderingLoop();
-
-      // TODO: consider whether this should be moved to the rendering service (initializeRenderer)
-      window.addEventListener('resize', () => {
-        this.rendering.resizeRenderer();
-      });
     }
   }
 

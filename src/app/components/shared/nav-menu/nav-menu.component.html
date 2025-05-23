@@ -64,8 +64,11 @@
     </button>
   </div>
   <ul
-    [class.ui--hidden]="!isMobileMenuOpen"
-    class="transition-all duration-300 ease-in-out flex flex-col items-center space-y-4 p-4 bg-slate-800"
+    [ngClass]="{
+      'translate-y-0 opacity-100 z-10': isMobileMenuOpen,
+      '-translate-y-full opacity-0 -z-10': !isMobileMenuOpen,
+    }"
+    class="relative transition-all duration-300 ease-in-out flex flex-col items-center space-y-4 p-4 bg-slate-800"
   >
     <li *ngFor="let page of pages">
       <a
