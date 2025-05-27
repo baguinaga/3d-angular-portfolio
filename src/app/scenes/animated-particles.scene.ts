@@ -34,6 +34,12 @@ export function animatedParticlesSceneDef(): SceneDefinition {
   const velocityMultY = 0.9;
   const velocityMultZ = 0.9;
 
+  // Particle Parameters
+  let isAttracting = false;
+  let mousePosition = new THREE.Vector3();
+  let releaseVelocity = 0;
+  let applyReleaseVelocity = false;
+
   // Defining segment connections
   const segmentColor = 0x000ccc; // Color of the segments
   const maxSegmentDistance = 150;
@@ -154,6 +160,10 @@ export function animatedParticlesSceneDef(): SceneDefinition {
         velocity.y -= 2 * dotProduct * normalY;
         velocity.z -= 2 * dotProduct * normalZ;
 
+        velocity.x = Math.max(-5, Math.min(2, velocity.x));
+        velocity.y = Math.max(-5, Math.min(2, velocity.y));
+        velocity.z = Math.max(-5, Math.min(2, velocity.z));
+
         const correctionFactor = sphereRadius / distanceFromCenter;
         particlePositions[i * 3] *= correctionFactor;
         particlePositions[i * 3 + 1] *= correctionFactor;
@@ -192,6 +202,28 @@ export function animatedParticlesSceneDef(): SceneDefinition {
           numConnected++;
         }
       }
+
+      if (isAttracting) {
+        // Attract particles to the mouse position
+        const particlePos = new THREE.Vector3(
+          particlePositions[i * 3],
+          particlePositions[i * 3 + 1],
+          particlePositions[i * 3 + 2],
+        );
+
+        const direction = mousePosition.clone().sub(particlePos).normalize();
+        const distance = direction.length(); // Calculate the distance to the mouse position
+        direction.normalize();
+        const attractionStrength = Math.min(0.1, 1 / (distance + 0.1)); // Adjust attraction strength
+        particle.velocity.add(direction.multiplyScalar(attractionStrength));
+      }
+      if (applyReleaseVelocity) {
+        // Apply release velocity
+        particle.velocity.multiplyScalar(0.5);
+      }
+      if (applyReleaseVelocity) {
+        applyReleaseVelocity = false; // Reset after applying
+      }
     }
 
     // Update segment geometry
@@ -228,6 +260,20 @@ export function animatedParticlesSceneDef(): SceneDefinition {
       );
 
       camera.updateProjectionMatrix();
+    },
+    mousedown: () => {
+      isAttracting = true;
+    },
+    mousemove: (position: THREE.Vector2) => {
+      const vector = new THREE.Vector3(position.x, position.y, 0.5); // NDC z = 0.5 for the middle of the view frustum
+      vector.unproject(camera); // Convert from NDC to world space
+      mousePosition.copy(vector); // Update the mouse position in 3D space
+    },
+    mouseup: (velocity: number) => {
+      isAttracting = false;
+      releaseVelocity = Math.min(velocity, 5); // Cap velocity at a maximum value (e.g., 5)
+      applyReleaseVelocity = true;
+      mousePosition.set(0, 0, 0);
     },
   };
 

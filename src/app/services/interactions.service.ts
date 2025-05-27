@@ -11,6 +11,9 @@ export class InteractionsService {
   private selectedObject: THREE.Object3D | null = null;
   private interactMode: boolean = false;
   private previousTouchDistance?: number;
+  private isMouseDown: boolean = false;
+  private mouseDownStartTime: number | null = null;
+  private mousePosition: THREE.Vector2 = new THREE.Vector2();
 
   private isTouchEndOrInvalid(event: TouchEvent, reqTouches: number): boolean {
     return (
@@ -37,7 +40,7 @@ export class InteractionsService {
     event: MouseEvent,
     scene: THREE.Scene,
     camera: THREE.PerspectiveCamera,
-    callback?: (object: THREE.Object3D, deltaX: number, deltaY: number) => void,
+    callback?: (mousePosition: THREE.Vector2) => void,
   ): void {
     if (!this.interactMode) return;
     if (!camera || !scene) return;
@@ -47,17 +50,20 @@ export class InteractionsService {
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    this.raycaster.setFromCamera(this.mouse, camera);
-    const intersects = this.raycaster.intersectObjects(scene.children, true);
+    callback && callback(this.mousePosition);
 
-    if (intersects.length > 0) {
-      const object = intersects[0].object;
-      const deltaX = event.movementX;
-      const deltaY = event.movementY;
+    // this.raycaster.setFromCamera(this.mouse, camera);
+    // const intersects = this.raycaster.intersectObjects(scene.children, true);
 
-      // If Callback is provided, call it with the intersected object and delta values
-      callback && callback(object, deltaX, deltaY);
-    }
+    // TODO: move logic to cube/sphere scene callback
+    // if (intersects.length > 0) {
+    //   const object = intersects[0].object;
+    //   const deltaX = event.movementX;
+    //   const deltaY = event.movementY;
+
+    //   // If Callback is provided, call it with the intersected object and delta values
+    //   callback && callback(object, deltaX, deltaY);
+    // }
   }
 
   handleMouseDown(
@@ -69,6 +75,12 @@ export class InteractionsService {
     if (!this.interactMode) return;
     if (!camera || !scene) return;
     event.preventDefault();
+
+    this.isMouseDown = true;
+    this.mouseDownStartTime = performance.now();
+
+    this.mousePosition.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     this.raycaster.setFromCamera(this.mouse, camera);
     const intersects = this.raycaster.intersectObjects(scene.children);
@@ -90,12 +102,17 @@ export class InteractionsService {
     if (!this.interactMode) return;
     event.preventDefault();
 
-    this.selectedObject = null;
-    callback && callback();
+    if (this.isMouseDown && this.mouseDownStartTime !== null) {
+      const holdDuration = performance.now() - this.mouseDownStartTime; // Calculate hold duration
+      const releaseVelocity = Math.min(holdDuration / 1000, 5); // Cap velocity at a maximum value (e.g., 5)
+
+      this.isMouseDown = false;
+      this.mouseDownStartTime = null;
+      this.selectedObject = null;
+      callback && callback();
+    }
   }
 
-  // TODO: update other interactive handlers to pass along event data
-  // consider
   handleWheel(
     event: WheelEvent,
     scene: THREE.Scene,
