@@ -5,10 +5,11 @@ import { routeAnimation } from '../../../animations/animations';
 import { SceneManagerService } from '../../../services/scene-manager.service';
 
 @Component({
-  selector: 'app-page-loader',
-  templateUrl: './page-loader.component.html',
-  styleUrl: './page-loader.component.css',
-  animations: [routeAnimation],
+    selector: 'app-page-loader',
+    templateUrl: './page-loader.component.html',
+    styleUrl: './page-loader.component.css',
+    animations: [routeAnimation],
+    standalone: false
 })
 export class PageLoaderComponent implements OnInit {
   constructor(

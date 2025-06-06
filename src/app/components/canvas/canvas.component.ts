@@ -12,9 +12,10 @@ import { SceneManagerService } from '../../services/scene-manager.service';
 import * as Scenes from '../../scenes/index';
 
 @Component({
-  selector: 'app-canvas',
-  templateUrl: './canvas.component.html',
-  styleUrls: ['./canvas.component.css'],
+    selector: 'app-canvas',
+    templateUrl: './canvas.component.html',
+    styleUrls: ['./canvas.component.css'],
+    standalone: false
 })
 export class CanvasComponent implements AfterViewInit, OnChanges {
   @ViewChild('canvas', { static: true })
