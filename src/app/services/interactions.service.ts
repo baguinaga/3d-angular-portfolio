@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
-import * as THREE from 'three';
+import { Raycaster, Vector2, Object3D, Scene, PerspectiveCamera } from 'three';
 import { ZoomEventData } from '../types/interaction.types';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InteractionsService {
-  private raycaster = new THREE.Raycaster();
-  private mouse = new THREE.Vector2();
-  private selectedObject: THREE.Object3D | null = null;
+  private raycaster = new Raycaster();
+  private mouse = new Vector2();
+  private selectedObject: Object3D | null = null;
   private interactMode: boolean = false;
   private previousTouchDistance?: number;
   private isMouseDown: boolean = false;
   private mouseDownStartTime: number | null = null;
-  private mousePosition: THREE.Vector2 = new THREE.Vector2();
+  private mousePosition: Vector2 = new Vector2();
 
   private isTouchEndOrInvalid(event: TouchEvent, reqTouches: number): boolean {
     return (
@@ -38,9 +38,9 @@ export class InteractionsService {
 
   handleMouseMove(
     event: MouseEvent,
-    scene: THREE.Scene,
-    camera: THREE.PerspectiveCamera,
-    callback?: (mousePosition: THREE.Vector2) => void,
+    scene: Scene,
+    camera: PerspectiveCamera,
+    callback?: (mousePosition: Vector2) => void,
   ): void {
     if (!this.interactMode) return;
     if (!camera || !scene) return;
@@ -68,9 +68,9 @@ export class InteractionsService {
 
   handleMouseDown(
     event: MouseEvent,
-    scene: THREE.Scene,
-    camera: THREE.PerspectiveCamera,
-    callback?: (object?: THREE.Object3D) => void,
+    scene: Scene,
+    camera: PerspectiveCamera,
+    callback?: (object?: Object3D) => void,
   ): void {
     if (!this.interactMode) return;
     if (!camera || !scene) return;
@@ -95,8 +95,8 @@ export class InteractionsService {
 
   handleMouseUp(
     event: MouseEvent,
-    scene: THREE.Scene,
-    camera: THREE.PerspectiveCamera,
+    scene: Scene,
+    camera: PerspectiveCamera,
     callback?: () => void,
   ): void {
     if (!this.interactMode) return;
@@ -115,8 +115,8 @@ export class InteractionsService {
 
   handleWheel(
     event: WheelEvent,
-    scene: THREE.Scene,
-    camera: THREE.PerspectiveCamera,
+    scene: Scene,
+    camera: PerspectiveCamera,
     callback?: (data: ZoomEventData) => void,
   ): void {
     if (!this.interactMode) return;
@@ -134,8 +134,8 @@ export class InteractionsService {
 
   handleTouch(
     event: TouchEvent,
-    scene: THREE.Scene,
-    camera: THREE.PerspectiveCamera,
+    scene: Scene,
+    camera: PerspectiveCamera,
     callback?: (data: ZoomEventData) => void,
   ): void {
     if (!this.interactMode) return;

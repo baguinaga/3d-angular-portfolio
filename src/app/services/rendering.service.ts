@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import * as THREE from 'three';
+import { WebGLRenderer } from 'three';
 import { SceneManagerService } from './scene-manager.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RenderingService {
-  private renderer!: THREE.WebGLRenderer;
+  private renderer!: WebGLRenderer;
   // TODO: create a config for the default scene name and other constants
   private activeSceneName: string = 'particles-web';
 
@@ -21,8 +21,8 @@ export class RenderingService {
   }
 
   // Initialize the renderer
-  initializeRenderer(canvas: HTMLCanvasElement): THREE.WebGLRenderer {
-    this.renderer = new THREE.WebGLRenderer({
+  initializeRenderer(canvas: HTMLCanvasElement): WebGLRenderer {
+    this.renderer = new WebGLRenderer({
       canvas,
       antialias: true,
       alpha: true,

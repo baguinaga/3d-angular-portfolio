@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import * as THREE from 'three';
+import { Scene, PerspectiveCamera } from 'three';
 import { InteractionsService } from './interactions.service';
 import {
   CreateSceneFunction,
@@ -12,9 +12,9 @@ import { createInteractionCallbacks } from '../utils/interaction-callback-factor
   providedIn: 'root',
 })
 export class SceneManagerService {
-  private scenes: Record<string, THREE.Scene> = {};
+  private scenes: Record<string, Scene> = {};
   private animations: Record<string, () => void> = {};
-  private cameras: Record<string, THREE.PerspectiveCamera> = {};
+  private cameras: Record<string, PerspectiveCamera> = {};
   private sceneCallbacks: Record<string, InteractiveCallbacks> = {};
   private clearCallbacks?: () => void;
   private canvas?: HTMLCanvasElement;
@@ -33,8 +33,8 @@ export class SceneManagerService {
 
   registerScene(
     sceneName: string,
-    scene: THREE.Scene,
-    camera: THREE.PerspectiveCamera,
+    scene: Scene,
+    camera: PerspectiveCamera,
     animationCallback: () => void,
     callbacks?: InteractiveCallbacks,
   ): void {
@@ -64,7 +64,7 @@ export class SceneManagerService {
     });
   }
 
-  getScene(sceneName: string): THREE.Scene | undefined {
+  getScene(sceneName: string): Scene | undefined {
     return this.scenes[sceneName];
   }
 
@@ -143,7 +143,7 @@ export class SceneManagerService {
     }
   }
 
-  getCamera(sceneName: string): THREE.PerspectiveCamera | undefined {
+  getCamera(sceneName: string): PerspectiveCamera | undefined {
     return this.cameras[sceneName];
   }
 
