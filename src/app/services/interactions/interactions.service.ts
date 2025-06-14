@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Raycaster, Vector2, Object3D, Scene, PerspectiveCamera } from 'three';
-import { ZoomEventData } from '../types/interaction.types';
+import { InteractionsServiceContract } from './interactions.service.interface';
+import { ZoomEventData } from '../../types';
 
 @Injectable({
   providedIn: 'root',
 })
-export class InteractionsService {
+export class InteractionsService implements InteractionsServiceContract {
   private raycaster = new Raycaster();
   private mouse = new Vector2();
   private selectedObject: Object3D | null = null;
@@ -50,7 +51,7 @@ export class InteractionsService {
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    callback && callback(this.mousePosition);
+    callback?.(this.mousePosition);
 
     // this.raycaster.setFromCamera(this.mouse, camera);
     // const intersects = this.raycaster.intersectObjects(scene.children, true);
@@ -87,9 +88,9 @@ export class InteractionsService {
 
     if (intersects.length > 0) {
       this.selectedObject = intersects[0].object;
-      callback && callback(this.selectedObject);
+      callback?.(this.selectedObject);
     } else {
-      callback && callback();
+      callback?.();
     }
   }
 
@@ -97,7 +98,7 @@ export class InteractionsService {
     event: MouseEvent,
     scene: Scene,
     camera: PerspectiveCamera,
-    callback?: () => void,
+    callback?: (velocity: number) => void,
   ): void {
     if (!this.interactMode) return;
     event.preventDefault();
@@ -109,7 +110,7 @@ export class InteractionsService {
       this.isMouseDown = false;
       this.mouseDownStartTime = null;
       this.selectedObject = null;
-      callback && callback();
+      callback?.(releaseVelocity);
     }
   }
 
@@ -128,7 +129,7 @@ export class InteractionsService {
       // TODO: implement a config for zoomFactor and other settings that
       // could be scene specific (e.g. zoomFactor, rotationSpeed, etc.)
       data.delta = event.deltaY;
-      callback && callback(data);
+      callback?.(data);
     }
   }
 
@@ -160,7 +161,7 @@ export class InteractionsService {
       }
       const delta = this.previousTouchDistance - currentDistance;
       data.delta = delta;
-      callback && callback(data);
+      callback?.(data);
 
       this.previousTouchDistance = currentDistance;
     }

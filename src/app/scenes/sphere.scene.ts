@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { SceneDefinition } from '../types/scene.types';
+import { SceneDefinition } from '../types';
 
 export function sphereSceneDef(): SceneDefinition {
   const name = 'sphere';

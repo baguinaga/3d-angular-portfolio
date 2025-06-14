@@ -8,14 +8,15 @@ import {
   OnChanges,
   inject,
 } from '@angular/core';
-import { RenderingService } from '../../services/rendering.service';
-import { SceneManagerService } from '../../services/scene-manager.service';
-import * as Scenes from '../../scenes/index';
+import { RenderingService } from '../../services/rendering/rendering.service';
+import { SceneManagerService } from '../../services/scene-manager/scene-manager.service';
+import * as Scenes from '../../scenes';
 
 @Component({
   selector: 'app-canvas',
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.css'],
+  standalone: true,
 })
 export class CanvasComponent implements AfterViewInit, OnChanges {
   private rendering = inject(RenderingService);
@@ -30,8 +31,6 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
-    // Set the canvas reference in the SceneManagerService
-    // and initialize the renderer
     const canvas = this.canvasRef.nativeElement;
     if (canvas) {
       this.sceneManager.setCanvas(canvas);
@@ -43,7 +42,6 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    // Update the interact mode in the SceneManagerService
     this.sceneManager.setInteractMode(this.interactMode);
   }
 }

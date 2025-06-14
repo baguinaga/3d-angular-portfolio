@@ -1,12 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Scene, PerspectiveCamera } from 'three';
-import { InteractionsService } from './interactions.service';
-import {
-  CreateSceneFunction,
-  InteractiveCallbacks,
-} from '../types/scene.types';
-import { createInteractionCallbacks } from '../utils/interaction-callback-factory';
+import { InteractionsService } from '../interactions/interactions.service';
+import { CreateSceneFunction, InteractiveCallbacks } from '../../types';
+import { createInteractionCallbacks } from '../../utils/interaction-callback-factory';
 
 @Injectable({
   providedIn: 'root',
