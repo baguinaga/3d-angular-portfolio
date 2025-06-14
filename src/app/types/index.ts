@@ -19,6 +19,28 @@ export interface InteractiveCallbacks {
   mouseup?: (velocity: number) => void;
 }
 
+export interface Project {
+  name: string;
+  description: string;
+  technologies: string[];
+  githubLink: string;
+  demoLink: string | null;
+  image: string | null;
+}
+
+export interface ProjectsData {
+  currentProjects: Project[];
+  pastProjects: Project[];
+}
+
+export interface ProjectSection {
+  title: string;
+  id: string;
+  projects: Project[];
+  isOpen: () => boolean;
+  toggle: () => void;
+}
+
 export type SceneFunction = () => {
   name: string;
   scene: Scene;

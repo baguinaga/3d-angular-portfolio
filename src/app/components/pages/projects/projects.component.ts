@@ -1,12 +1,13 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { ProjectsData, Project, ProjectSection } from '../../../types';
 
 @Component({
-    selector: 'app-projects',
-    imports: [CommonModule],
-    templateUrl: './projects.component.html',
-    styleUrl: './projects.component.css'
+  selector: 'app-projects',
+  imports: [CommonModule],
+  templateUrl: './projects.component.html',
+  styleUrl: './projects.component.css',
 })
 export class ProjectsComponent implements OnInit {
   private http = inject(HttpClient);
@@ -14,9 +15,9 @@ export class ProjectsComponent implements OnInit {
   isCurrentOpen = true;
   isPastOpen = true;
 
-  currentProjects: any[] = [];
-  pastProjects: any[] = [];
-  sections: any[] = [];
+  currentProjects: Project[] = [];
+  pastProjects: Project[] = [];
+  sections: ProjectSection[] = [];
 
   placeholderImage = 'assets/images/placeholder.png';
 
@@ -25,7 +26,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   loadProjects(): void {
-    this.http.get('assets/projects.json').subscribe((data: any) => {
+    this.http.get<ProjectsData>('assets/projects.json').subscribe((data) => {
       this.currentProjects = data.currentProjects;
       this.pastProjects = data.pastProjects;
 
