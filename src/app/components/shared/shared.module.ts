@@ -5,8 +5,7 @@ import { PageLoaderComponent } from './page-loader/page-loader.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 
 @NgModule({
-  declarations: [PageLoaderComponent, NavMenuComponent],
-  imports: [CommonModule, SharedRoutingModule],
-  exports: [PageLoaderComponent, NavMenuComponent],
+    imports: [CommonModule, SharedRoutingModule, PageLoaderComponent, NavMenuComponent],
+    exports: [PageLoaderComponent, NavMenuComponent],
 })
 export class SharedModule {}

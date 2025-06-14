@@ -1,13 +1,21 @@
-import { Component, ElementRef, AfterViewInit, ViewChild, Input, HostListener, OnChanges, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  AfterViewInit,
+  ViewChild,
+  Input,
+  HostListener,
+  OnChanges,
+  inject,
+} from '@angular/core';
 import { RenderingService } from '../../services/rendering.service';
 import { SceneManagerService } from '../../services/scene-manager.service';
 import * as Scenes from '../../scenes/index';
 
 @Component({
-    selector: 'app-canvas',
-    templateUrl: './canvas.component.html',
-    styleUrls: ['./canvas.component.css'],
-    standalone: false
+  selector: 'app-canvas',
+  templateUrl: './canvas.component.html',
+  styleUrls: ['./canvas.component.css'],
 })
 export class CanvasComponent implements AfterViewInit, OnChanges {
   private rendering = inject(RenderingService);
@@ -26,7 +34,7 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
     // and initialize the renderer
     const canvas = this.canvasRef.nativeElement;
     if (canvas) {
-      canvas && this.sceneManager.setCanvas(canvas);
+      this.sceneManager.setCanvas(canvas);
       this.sceneManager.setInteractMode(this.interactMode);
       this.sceneManager.registerAllScenes(Scenes);
       this.rendering.initializeRenderer(canvas);

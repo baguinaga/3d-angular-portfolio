@@ -9,15 +9,15 @@ import { SharedModule } from './components/shared/shared.module';
 import { provideHttpClient } from '@angular/common/http';
 
 @NgModule({
-  declarations: [AppComponent, CanvasComponent],
-  imports: [
-    SharedModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    CommonModule,
-  ],
-  providers: [provideHttpClient()],
-  bootstrap: [AppComponent],
+    imports: [
+        SharedModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        CommonModule,
+        AppComponent, CanvasComponent,
+    ],
+    providers: [provideHttpClient()],
+    bootstrap: [AppComponent],
 })
 export class AppModule {}

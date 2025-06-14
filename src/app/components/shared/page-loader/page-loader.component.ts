@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { routeAnimation } from '../../../animations/animations';
 import { SceneManagerService } from '../../../services/scene-manager.service';
@@ -9,7 +9,7 @@ import { SceneManagerService } from '../../../services/scene-manager.service';
     templateUrl: './page-loader.component.html',
     styleUrl: './page-loader.component.css',
     animations: [routeAnimation],
-    standalone: false
+    imports: [RouterOutlet]
 })
 export class PageLoaderComponent implements OnInit {
   protected activatedRoute = inject(ActivatedRoute);
