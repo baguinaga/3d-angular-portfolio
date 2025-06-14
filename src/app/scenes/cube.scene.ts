@@ -1,24 +1,33 @@
 import * as THREE from 'three';
-import { SceneDefinition } from '../types/scene.types';
+import {
+  Scene,
+  Color,
+  BoxGeometry,
+  MeshBasicMaterial,
+  Mesh,
+  PerspectiveCamera,
+} from 'three';
+import { SceneDefinition } from '../types';
 
 export function cubeSceneDef(): SceneDefinition {
   const name = 'cube';
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xccc9b8);
+  const scene = new Scene();
+  scene.background = new Color(0xabcdef);
 
-  const camera = new THREE.PerspectiveCamera(
-    1,
+  // create a cube
+  const geometry = new BoxGeometry(1, 1, 1);
+  const material = new MeshBasicMaterial({ color: 0x00ff00 });
+  const cube = new Mesh(geometry, material);
+  scene.add(cube);
+
+  // set up the camera
+  const camera = new PerspectiveCamera(
+    75,
     window.innerWidth / window.innerHeight,
-    1,
+    0.1,
     1000,
   );
-  camera.position.z = 200;
-
-  const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshMatcapMaterial({ color: 0xdddddd }),
-  );
-  scene.add(cube);
+  camera.position.z = 5;
 
   const animation = () => {
     cube.rotation.x += 0.01;

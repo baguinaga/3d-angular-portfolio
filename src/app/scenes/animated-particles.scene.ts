@@ -1,12 +1,28 @@
-import * as THREE from 'three';
-import { SceneDefinition } from '../types/scene.types';
-import { ZoomEventData } from '../types/interaction.types';
+import {
+  Scene,
+  Color,
+  BufferGeometry,
+  Vector2,
+  Vector3,
+  PointsMaterial,
+  AdditiveBlending,
+  BufferAttribute,
+  DynamicDrawUsage,
+  Points,
+  LineBasicMaterial,
+  LineSegments,
+  PerspectiveCamera,
+} from 'three';
+import { SceneDefinition, ZoomEventData, ParticleData } from '../types';
+import { InteractionsServiceContract } from '../services/interactions/interactions.service.interface';
 import { setVertexColor } from '../utils/color-utils';
 
-export function animatedParticlesSceneDef(): SceneDefinition {
+export function animatedParticlesSceneDef(
+  _interactionsService?: InteractionsServiceContract,
+): SceneDefinition {
   const name = 'particles-web';
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xb3a89d);
+  const scene = new Scene();
+  scene.background = new Color(0xb3a89d);
 
   // TODO:Set up a scene config object, consumed by individual scenes (may want different behaviors)
   const farPlane = 4000;
@@ -24,10 +40,10 @@ export function animatedParticlesSceneDef(): SceneDefinition {
   const sphereRadius = diameter / 2;
 
   // Defining the particle system
-  const particles = new THREE.BufferGeometry();
+  const particles = new BufferGeometry();
   const particleCount = 1000;
   const particlePositions = new Float32Array(particleCount * 3);
-  const particleData: any = [];
+  const particleData: ParticleData[] = [];
 
   // Particle Velocity Multipliers
   const velocityMultX = 0.9;
@@ -36,7 +52,7 @@ export function animatedParticlesSceneDef(): SceneDefinition {
 
   // Particle Parameters
   let isAttracting = false;
-  let mousePosition = new THREE.Vector3();
+  const mousePosition = new Vector3();
   let releaseVelocity = 0;
   let applyReleaseVelocity = false;
 
@@ -47,21 +63,21 @@ export function animatedParticlesSceneDef(): SceneDefinition {
   const segmentCount = particleCount * particleCount;
   const segmentPositions = new Float32Array(segmentCount * 3);
   const colors = new Float32Array(segmentCount * 3);
-  const segments = new THREE.BufferGeometry();
+  const segments = new BufferGeometry();
 
   // Particle Material
-  const pMaterial = new THREE.PointsMaterial({
+  const pMaterial = new PointsMaterial({
     color: 0xffffff,
     size: 2,
-    blending: THREE.AdditiveBlending,
+    blending: AdditiveBlending,
     transparent: true,
     sizeAttenuation: false,
   });
 
   // Segment Material
-  const sMaterial = new THREE.LineBasicMaterial({
+  const sMaterial = new LineBasicMaterial({
     vertexColors: true,
-    blending: THREE.AdditiveBlending,
+    blending: AdditiveBlending,
     transparent: true,
   });
 
@@ -80,7 +96,7 @@ export function animatedParticlesSceneDef(): SceneDefinition {
 
     // storing the particle velocity and number of connections
     particleData.push({
-      velocity: new THREE.Vector3(
+      velocity: new Vector3(
         -1 + Math.random() * 2 * velocityMultX,
         -1 + Math.random() * 2 * velocityMultY,
         -1 + Math.random() * 2 * velocityMultZ,
@@ -91,34 +107,25 @@ export function animatedParticlesSceneDef(): SceneDefinition {
 
   particles.setAttribute(
     'position',
-    new THREE.BufferAttribute(particlePositions, 3).setUsage(
-      THREE.DynamicDrawUsage,
-    ),
+    new BufferAttribute(particlePositions, 3).setUsage(DynamicDrawUsage),
   );
 
   segments.setAttribute(
     'position',
-    new THREE.BufferAttribute(segmentPositions, 3).setUsage(
-      THREE.DynamicDrawUsage,
-    ),
+    new BufferAttribute(segmentPositions, 3).setUsage(DynamicDrawUsage),
   );
   segments.setAttribute(
     'color',
-    new THREE.BufferAttribute(colors, 3).setUsage(THREE.DynamicDrawUsage),
+    new BufferAttribute(colors, 3).setUsage(DynamicDrawUsage),
   );
 
-  const pointCloud = new THREE.Points(particles, pMaterial);
-  const lineSegments = new THREE.LineSegments(segments, sMaterial);
+  const pointCloud = new Points(particles, pMaterial);
+  const lineSegments = new LineSegments(segments, sMaterial);
 
   scene.add(pointCloud, lineSegments);
 
   // Set up the camera
-  const camera = new THREE.PerspectiveCamera(
-    fov,
-    aspectRatio,
-    nearPlane,
-    farPlane,
-  );
+  const camera = new PerspectiveCamera(fov, aspectRatio, nearPlane, farPlane);
   camera.position.z = defaultZoom;
 
   const animation = () => {
@@ -205,7 +212,7 @@ export function animatedParticlesSceneDef(): SceneDefinition {
 
       if (isAttracting) {
         // Attract particles to the mouse position
-        const particlePos = new THREE.Vector3(
+        const particlePos = new Vector3(
           particlePositions[i * 3],
           particlePositions[i * 3 + 1],
           particlePositions[i * 3 + 2],
@@ -219,7 +226,7 @@ export function animatedParticlesSceneDef(): SceneDefinition {
       }
       if (applyReleaseVelocity) {
         // Apply release velocity
-        particle.velocity.multiplyScalar(0.5);
+        particle.velocity.multiplyScalar(releaseVelocity);
       }
       if (applyReleaseVelocity) {
         applyReleaseVelocity = false; // Reset after applying
@@ -264,13 +271,12 @@ export function animatedParticlesSceneDef(): SceneDefinition {
     mousedown: () => {
       isAttracting = true;
     },
-    mousemove: (position: THREE.Vector2) => {
-      const vector = new THREE.Vector3(position.x, position.y, 0.5); // NDC z = 0.5 for the middle of the view frustum
-      vector.unproject(camera); // Convert from NDC to world space
-      mousePosition.copy(vector); // Update the mouse position in 3D space
+    mousemove: (position: Vector2) => {
+      const vector = new Vector3(position.x, position.y, 0.5);
+      vector.unproject(camera);
+      mousePosition.copy(vector);
     },
     mouseup: (velocity: number) => {
-      isAttracting = false;
       releaseVelocity = Math.min(velocity, 5); // Cap velocity at a maximum value (e.g., 5)
       applyReleaseVelocity = true;
       mousePosition.set(0, 0, 0);

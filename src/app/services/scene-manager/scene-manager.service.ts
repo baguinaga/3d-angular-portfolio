@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Scene, PerspectiveCamera } from 'three';
-import { InteractionsService } from './interactions.service';
-import {
-  CreateSceneFunction,
-  InteractiveCallbacks,
-} from '../types/scene.types';
-import { createInteractionCallbacks } from '../utils/interaction-callback-factory';
+import { InteractionsService } from '../interactions/interactions.service';
+import { CreateSceneFunction, InteractiveCallbacks } from '../../types';
+import { createInteractionCallbacks } from '../../utils/interaction-callback-factory';
 
 @Injectable({
   providedIn: 'root',
@@ -75,7 +72,7 @@ export class SceneManagerService {
   // This method sets the active scene Subject which emits the activeScene$ observable
   // TODO: integrate with interaction callback factory (note key issues with current implementation in page-loader.ts)
   setActiveScene(sceneName: string): void {
-    if (!!this.getScene(sceneName)) {
+    if (this.getScene(sceneName)) {
       // Clear previous scene callbacks
       if (this.clearCallbacks) {
         this.clearCallbacks();
