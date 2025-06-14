@@ -23,7 +23,7 @@ export function setVertexColor(
   colors: Float32Array,
   colorpos: number,
   hex: number | string,
-  alpha: number = 1.0,
+  alpha = 1.0,
 ): number {
   const { r, g, b } = hexToRgb(hex); // Convert hex to RGB
   colors[colorpos++] = r * alpha; // Red component

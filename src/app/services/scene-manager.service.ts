@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Scene, PerspectiveCamera } from 'three';
 import { InteractionsService } from './interactions.service';
@@ -12,6 +12,8 @@ import { createInteractionCallbacks } from '../utils/interaction-callback-factor
   providedIn: 'root',
 })
 export class SceneManagerService {
+  private interactionsService = inject(InteractionsService);
+
   private scenes: Record<string, Scene> = {};
   private animations: Record<string, () => void> = {};
   private cameras: Record<string, PerspectiveCamera> = {};
@@ -24,8 +26,6 @@ export class SceneManagerService {
   private activeSceneSubject = new BehaviorSubject<string>('particles-web');
   public activeScene$: Observable<string> =
     this.activeSceneSubject.asObservable();
-
-  constructor(private interactionsService: InteractionsService) {}
 
   setCanvas(canvas: HTMLCanvasElement): void {
     this.canvas = canvas;
@@ -75,7 +75,7 @@ export class SceneManagerService {
   // This method sets the active scene Subject which emits the activeScene$ observable
   // TODO: integrate with interaction callback factory (note key issues with current implementation in page-loader.ts)
   setActiveScene(sceneName: string): void {
-    if (!!this.getScene(sceneName)) {
+    if (this.getScene(sceneName)) {
       // Clear previous scene callbacks
       if (this.clearCallbacks) {
         this.clearCallbacks();

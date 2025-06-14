@@ -4,7 +4,7 @@ export function createInteractionCallbacks(
   canvas: HTMLCanvasElement,
   callbacks: InteractiveCallbacks,
 ): () => void {
-  const listeners: { [key: string]: EventListener } = {};
+  const listeners: Record<string, EventListener> = {};
 
   // Register event listeners for each mouse event : callback pair
   // listeners object stores the event listeners to be removed later

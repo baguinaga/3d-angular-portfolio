@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { WebGLRenderer } from 'three';
 import { SceneManagerService } from './scene-manager.service';
 
@@ -6,13 +6,15 @@ import { SceneManagerService } from './scene-manager.service';
   providedIn: 'root',
 })
 export class RenderingService {
+  private sceneManager = inject(SceneManagerService);
+
   private renderer!: WebGLRenderer;
   // TODO: create a config for the default scene name and other constants
-  private activeSceneName: string = 'particles-web';
+  private activeSceneName = 'particles-web';
 
   // Subscribe to the active scene name from the SceneManagerService,
   // trigger resize to maintain aspect ratio
-  constructor(private sceneManager: SceneManagerService) {
+  constructor() {
     this.sceneManager.activeScene$.subscribe((sceneName) => {
       this.activeSceneName = sceneName;
       //short-circuit evaluation, only resize if renderer has been initialized

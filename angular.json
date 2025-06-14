@@ -92,7 +92,6 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": ["tsconfig.app.json", "tsconfig.spec.json"],
             "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }

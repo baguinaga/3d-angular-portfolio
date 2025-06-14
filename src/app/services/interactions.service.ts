@@ -9,9 +9,9 @@ export class InteractionsService {
   private raycaster = new Raycaster();
   private mouse = new Vector2();
   private selectedObject: Object3D | null = null;
-  private interactMode: boolean = false;
+  private interactMode = false;
   private previousTouchDistance?: number;
-  private isMouseDown: boolean = false;
+  private isMouseDown = false;
   private mouseDownStartTime: number | null = null;
   private mousePosition: Vector2 = new Vector2();
 

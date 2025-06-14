@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { routeAnimation } from '../../../animations/animations';
@@ -12,11 +12,10 @@ import { SceneManagerService } from '../../../services/scene-manager.service';
     standalone: false
 })
 export class PageLoaderComponent implements OnInit {
-  constructor(
-    protected activatedRoute: ActivatedRoute,
-    private router: Router,
-    private sceneManager: SceneManagerService,
-  ) {}
+  protected activatedRoute = inject(ActivatedRoute);
+  private router = inject(Router);
+  private sceneManager = inject(SceneManagerService);
+
 
   ngOnInit(): void {
     this.router.events

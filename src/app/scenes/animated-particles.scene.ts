@@ -36,7 +36,7 @@ export function animatedParticlesSceneDef(): SceneDefinition {
 
   // Particle Parameters
   let isAttracting = false;
-  let mousePosition = new THREE.Vector3();
+  const mousePosition = new THREE.Vector3();
   let releaseVelocity = 0;
   let applyReleaseVelocity = false;
 

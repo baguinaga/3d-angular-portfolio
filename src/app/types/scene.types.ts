@@ -1,9 +1,7 @@
 import * as THREE from 'three';
 import { InteractionsService } from '../services/interactions.service';
 
-export type InteractiveCallbacks = {
-  [key: string]: (...args: any[]) => void;
-};
+export type InteractiveCallbacks = Record<string, (...args: any[]) => void>;
 
 export type SceneFunction = () => {
   name: string;

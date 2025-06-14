@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -7,12 +7,14 @@ import { filter } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class UnderConstructionService {
+  private router = inject(Router);
+
   private underConstructionSubject = new BehaviorSubject<boolean>(false);
   public underConstruction$ = this.underConstructionSubject.asObservable();
 
   private underConstructionRoutes = ['/under-construction'];
 
-  constructor(private router: Router) {
+  constructor() {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe({
