@@ -8,17 +8,20 @@
   <!-- Main Layout -->
   <div class="relative flex min-h-screen pt-16 lg:pt-0">
     <!-- Navigation Menu -->
-    <app-nav-menu *ngIf="!underConstruction" [pages]="pages"></app-nav-menu>
+    @if (!underConstruction) {
+      <app-nav-menu [pages]="pages"></app-nav-menu>
+    }
 
     <!-- Main Content -->
     <main class="relative flex-1">
-      <button
-        *ngIf="!underConstruction"
-        class="absolute lg:bottom-10 bottom-4 lg:right-10 right-4 z-50 bg-slate-800 hover:bg-slate-900 text-white w-32 py-3 shadow-custom rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 transition duration-300 ease-in-out"
-        (click)="toggleInteractMode()"
-      >
-        {{ interactMode ? 'Return' : 'Interact' }}
-      </button>
+      @if (!underConstruction) {
+        <button
+          class="absolute lg:bottom-10 bottom-4 lg:right-10 right-4 z-50 bg-slate-800 hover:bg-slate-900 text-white w-32 py-3 shadow-custom rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 transition duration-300 ease-in-out"
+          (click)="toggleInteractMode()"
+        >
+          {{ interactMode ? 'Return' : 'Interact' }}
+        </button>
+      }
 
       <!-- Page Loader Component -->
       <app-page-loader></app-page-loader>

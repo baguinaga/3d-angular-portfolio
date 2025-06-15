@@ -33,9 +33,11 @@ export function sphereSceneDef(): SceneDefinition {
       console.log('mousemove');
     },
     mousedown: (object: THREE.Object3D) => {
-      object
-        ? console.log('mousedown', object)
-        : console.log('mousedown', 'No object selected');
+      if (object) {
+        console.log('mousedown', object);
+      } else {
+        console.log('mousedown', 'No object selected');
+      }
     },
     // TODO: Placeholder for mouse up event
     mouseup: () => {

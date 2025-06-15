@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { WebGLRenderer } from 'three';
-import { SceneManagerService } from './scene-manager.service';
+import { SceneManagerService } from '../scene-manager/scene-manager.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,10 +15,12 @@ export class RenderingService {
   // Subscribe to the active scene name from the SceneManagerService,
   // trigger resize to maintain aspect ratio
   constructor() {
-    this.sceneManager.activeScene$.subscribe((sceneName) => {
+    this.sceneManager.activeScene$.subscribe((sceneName: string) => {
       this.activeSceneName = sceneName;
       //short-circuit evaluation, only resize if renderer has been initialized
-      this.renderer && this.resizeRenderer();
+      if (this.renderer) {
+        this.resizeRenderer();
+      }
     });
   }
 

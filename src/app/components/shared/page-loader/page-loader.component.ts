@@ -3,7 +3,7 @@ import {
   ActivatedRoute,
   Router,
   NavigationEnd,
-  RouterOutlet,
+  RouterModule,
 } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { routeAnimation } from '../../../animations/animations';
@@ -15,6 +15,7 @@ import { SceneManagerService } from '../../../services/scene-manager/scene-manag
   styleUrls: ['./page-loader.component.css'],
   animations: [routeAnimation],
   standalone: true,
+  imports: [RouterModule],
 })
 export class PageLoaderComponent implements OnInit {
   protected activatedRoute = inject(ActivatedRoute);
@@ -29,9 +30,11 @@ export class PageLoaderComponent implements OnInit {
         const scene = currentRoute?.snapshot.data['scene'];
 
         // TODO: create a hollistic method for handling negative cases
-        scene
-          ? this.sceneManager.setActiveScene(scene)
-          : console.error('No scene defined for this route');
+        if (scene) {
+          this.sceneManager.setActiveScene(scene);
+        } else {
+          console.error('No scene defined for this route');
+        }
       });
   }
 }
