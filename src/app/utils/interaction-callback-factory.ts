@@ -1,19 +1,15 @@
-import { InteractiveCallbacks } from '../types/scene.types';
-
 export function createInteractionCallbacks(
   canvas: HTMLCanvasElement,
-  callbacks: InteractiveCallbacks,
+  handlers: Partial<Record<keyof DocumentEventMap, EventListener>>,
 ): () => void {
   const listeners: Record<string, EventListener> = {};
 
-  // Register event listeners for each mouse event : callback pair
-  // listeners object stores the event listeners to be removed later
-  Object.keys(callbacks).forEach((eventName) => {
-    listeners[eventName] = ((event: Event) => {
-      callbacks[eventName]!(event);
-    }) as EventListener;
-
-    canvas.addEventListener(eventName, listeners[eventName]);
+  // Register event listeners for each handler
+  Object.entries(handlers).forEach(([eventName, handler]) => {
+    if (handler) {
+      listeners[eventName] = handler;
+      canvas.addEventListener(eventName as keyof DocumentEventMap, handler);
+    }
   });
 
   // Returns a higher-order function that removes the event listeners

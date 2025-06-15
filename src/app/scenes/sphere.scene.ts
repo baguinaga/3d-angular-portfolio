@@ -1,12 +1,32 @@
-import * as THREE from 'three';
-import { SceneDefinition } from '../types';
+import {
+  Scene,
+  Color,
+  PerspectiveCamera,
+  Mesh,
+  SphereGeometry,
+  MeshMatcapMaterial,
+  Object3D,
+} from 'three';
+import {
+  SceneDefinition,
+  Callbacks,
+  IObjectMouseDownCallback,
+  IObjectMouseMoveCallback,
+  IObjectMouseUpCallback,
+} from '../types';
 
-export function sphereSceneDef(): SceneDefinition {
+type ObjectCallbacks = Callbacks<
+  IObjectMouseDownCallback,
+  IObjectMouseMoveCallback,
+  IObjectMouseUpCallback
+>;
+
+export function sphereSceneDef(): SceneDefinition<ObjectCallbacks> {
   const name = 'sphere';
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xccc9b8);
+  const scene = new Scene();
+  scene.background = new Color(0xccc9b8);
 
-  const camera = new THREE.PerspectiveCamera(
+  const camera = new PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     0.1,
@@ -14,9 +34,9 @@ export function sphereSceneDef(): SceneDefinition {
   );
   camera.position.z = 5;
 
-  const sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(1.5, 32, 32),
-    new THREE.MeshMatcapMaterial({ color: 0xff0000 }),
+  const sphere = new Mesh(
+    new SphereGeometry(1.5, 32, 32),
+    new MeshMatcapMaterial({ color: 0xff0000 }),
   );
   scene.add(sphere);
 
@@ -25,14 +45,14 @@ export function sphereSceneDef(): SceneDefinition {
     sphere.rotation.y += 0.01;
   };
 
-  const callbacks = {
+  const callbacks: ObjectCallbacks = {
     // Push the object away from the cursor
-    mousemove: (object: THREE.Object3D, deltaX: number, deltaY: number) => {
+    mousemove: (object: Object3D, deltaX: number, deltaY: number) => {
       object.position.x += deltaX * 0.01;
       object.position.y -= deltaY * 0.01;
       console.log('mousemove');
     },
-    mousedown: (object: THREE.Object3D) => {
+    mousedown: (object: Object3D) => {
       if (object) {
         console.log('mousedown', object);
       } else {

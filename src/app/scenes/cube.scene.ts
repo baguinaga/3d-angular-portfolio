@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import {
   Scene,
   Color,
@@ -6,10 +5,23 @@ import {
   MeshBasicMaterial,
   Mesh,
   PerspectiveCamera,
+  Object3D,
 } from 'three';
-import { SceneDefinition } from '../types';
+import {
+  SceneDefinition,
+  Callbacks,
+  IObjectMouseDownCallback,
+  IObjectMouseMoveCallback,
+  IObjectMouseUpCallback,
+} from '../types';
 
-export function cubeSceneDef(): SceneDefinition {
+type ObjectCallbacks = Callbacks<
+  IObjectMouseDownCallback,
+  IObjectMouseMoveCallback,
+  IObjectMouseUpCallback
+>;
+
+export function cubeSceneDef(): SceneDefinition<ObjectCallbacks> {
   const name = 'cube';
   const scene = new Scene();
   scene.background = new Color(0xabcdef);
@@ -33,18 +45,16 @@ export function cubeSceneDef(): SceneDefinition {
     cube.rotation.x += 0.01;
     cube.rotation.y += 0.01;
   };
-  // TODO: create a file that contains generic types of interaction callbacks
-  // for example: "push" "rotate" "scale" "select" "deselect"
 
-  const callbacks = {
+  const callbacks: ObjectCallbacks = {
     // Push the object away from the cursor
-    mousemove: (object: THREE.Object3D, deltaX: number, deltaY: number) => {
+    mousemove: (object: Object3D, deltaX: number, deltaY: number) => {
       object.position.x += deltaX * 0.01;
       object.position.y -= deltaY * 0.01;
       console.log('mousemove');
     },
     // TODO: Placeholder for mouse down and up events
-    mousedown: (object: THREE.Object3D) => {
+    mousedown: (object: Object3D) => {
       if (object) {
         console.log('mousedown', object);
       } else {

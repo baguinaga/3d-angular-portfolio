@@ -19,7 +19,7 @@ export interface InteractionsServiceContract {
     event: MouseEvent,
     scene: Scene,
     camera: PerspectiveCamera,
-    callback?: () => void,
+    callback?: (velocity: number) => void,
   ): void;
   handleWheel(
     event: WheelEvent,

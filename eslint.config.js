@@ -37,6 +37,18 @@ module.exports = tseslint.config(
           argsIgnorePattern: '^_', // Ignore function arguments prefixed with an underscore
         },
       ],
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['* as *'],
+              message:
+                'Wildcard imports (import * as name) are not allowed. Use explicit named imports instead.',
+            },
+          ],
+        },
+      ],
     },
   },
   {
