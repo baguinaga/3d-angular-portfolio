@@ -26,29 +26,31 @@ export class ProjectsComponent implements OnInit {
   }
 
   loadProjects(): void {
-    this.http.get<ProjectsData>('assets/projects.json').subscribe((data) => {
-      this.currentProjects = data.currentProjects;
-      this.pastProjects = data.pastProjects;
+    this.http
+      .get<ProjectsData>('assets/projects.example.json')
+      .subscribe((data) => {
+        this.currentProjects = data.currentProjects;
+        this.pastProjects = data.pastProjects;
 
-      if (this.currentProjects && this.currentProjects.length > 0) {
-        this.sections = [
-          {
-            title: 'Current Projects',
-            id: 'current-projects',
-            projects: this.currentProjects,
-            isOpen: () => this.isCurrentOpen,
-            toggle: () => (this.isCurrentOpen = !this.isCurrentOpen),
-          },
-          {
-            title: 'Archived Projects',
-            id: 'archived-projects',
-            projects: this.pastProjects,
-            isOpen: () => this.isPastOpen,
-            toggle: () => (this.isPastOpen = !this.isPastOpen),
-          },
-        ];
-      }
-    });
+        if (this.currentProjects && this.currentProjects.length > 0) {
+          this.sections = [
+            {
+              title: 'Current Projects',
+              id: 'current-projects',
+              projects: this.currentProjects,
+              isOpen: () => this.isCurrentOpen,
+              toggle: () => (this.isCurrentOpen = !this.isCurrentOpen),
+            },
+            {
+              title: 'Archived Projects',
+              id: 'archived-projects',
+              projects: this.pastProjects,
+              isOpen: () => this.isPastOpen,
+              toggle: () => (this.isPastOpen = !this.isPastOpen),
+            },
+          ];
+        }
+      });
   }
 
   toggleAccordion(section: 'current' | 'past'): void {
