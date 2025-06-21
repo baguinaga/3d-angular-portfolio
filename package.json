@@ -32,6 +32,7 @@
     "@angular/build": "^20.0.3",
     "@angular/cli": "^20.0.3",
     "@angular/compiler-cli": "^20.0.4",
+    "@tailwindcss/postcss": "^4.1.10",
     "@types/jest": "^29.5.14",
     "@types/three": "^0.177.0",
     "angular-eslint": "^20.1.1",
