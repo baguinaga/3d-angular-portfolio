@@ -4,3 +4,7 @@ onlyBuiltDependencies:
   - esbuild
   - lmdb
   - msgpackr-extract
+
+overrides:
+  '@eslint/plugin-kit@<0.3.3': '>=0.3.3'
+  form-data@>=4.0.0 <4.0.4: '>=4.0.4'
